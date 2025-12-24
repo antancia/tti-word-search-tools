@@ -71,10 +71,6 @@
   min-width: auto;
 }
 
-.letter-checkbox span {
-  font-weight: bold;
-}
-
 .checkbox-label {
   display: flex;
   align-items: center;

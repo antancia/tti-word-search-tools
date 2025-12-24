@@ -1,4 +1,10 @@
-const grid: string[] = [
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+// The key letters are in order of the alphabet. Examples: A = L, B = G, etc.
+const CRYPTOGRAM_KEY = "LGUWV??ROB?TPYHSDIMFCA?ENK";
+
+// ----------------- Word lists -----------------
+
+const grid = [
   "QVUCALILENINETEENBMA",
   "CRETEHTREAOUCSIFEVLE",
   "OROUNDHNIMIHSTOLIARO",
@@ -14,10 +20,9 @@ const grid: string[] = [
   "NMTOPLECEOHETQUARRYQ",
   "NSIOSMIXZFDQBCCASLIY",
   "APSOREZNGQZPSAPPHIRE",
-];
+] as const;
 
-const forwardsWords: string[] = [
-  "anime",
+const forwardsWords = [
   "count",
   "divide",
   "eleven",
@@ -33,12 +38,11 @@ const forwardsWords: string[] = [
   "square",
   "three",
   "tron",
-];
+] as const;
 
-const forwardsWordsExtra: string[] = ["dose", "erie", "sore"];
+const forwardsWordsExtra = ["anime", "dose", "erie", "sore"] as const;
 
-const backwardsWords: string[] = [
-  "coke",
+const backwardsWords = [
   "dirt",
   "state",
   "lilac",
@@ -51,13 +55,13 @@ const backwardsWords: string[] = [
   "water",
   "west",
   "zero",
-];
+] as const;
 
-const backwardsWordsExtra: string[] = ["erie", "ohio", "yeoman"];
+const backwardsWordsExtra = ["coke", "erie", "ohio", "yeoman"] as const;
 
 // The anagrammed words which spell the secret message in the word search, they are all
 // read left-to-right (aka none vertical)
-const secretMessageWords: string[] = [
+const secretMessageWords = [
   "reteh", // there
   "rea", // are
   "ucsifevle", // five clues
@@ -79,20 +83,36 @@ const secretMessageWords: string[] = [
   "mtoplece", // complete
   "het", // the
   "nsiosmi", // mission
+] as const;
+
+// ----------------- Colors -----------------
+
+const forwardsColors = [
+  "rgba(255, 255, 0, 0.7)", // Yellow
+  "rgba(255, 165, 0, 0.7)", // Orange
+  "rgba(255, 215, 0, 0.7)", // Gold
 ];
 
-// The key letters are in order of the alphabet. Examples:
-//   A = L
-//   B = G
-//   C = U
-const cryptogramKey = "LGUWV??ROB?TPYHSDIMFCA?ENK";
+const backwardsColors = [
+  "rgba(72, 209, 204, 0.7)", // Medium turquoise
+  "rgba(50, 205, 50, 0.7)", // Lime green
+  "rgba(0, 191, 255, 0.7)", // Deep sky blue
+];
+
+const secretMessageColor = "rgba(255, 192, 203, 0.7)"; // Pink
 
 export {
+  ALPHABET,
+  CRYPTOGRAM_KEY,
   backwardsWords,
   backwardsWordsExtra,
-  cryptogramKey,
   forwardsWords,
   forwardsWordsExtra,
   grid,
   secretMessageWords,
+
+  // colors
+  backwardsColors,
+  forwardsColors,
+  secretMessageColor,
 };
