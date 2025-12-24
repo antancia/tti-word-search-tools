@@ -13,11 +13,10 @@ export const WordHighlightControls: React.FC = () => {
     setHighlightBackwardsExtra,
     highlightSecretMessage,
     setHighlightSecretMessage,
-    isCryptogramActive,
   } = useWordSearchControls();
 
   return (
-    <div className={`controls-box ${isCryptogramActive ? "disabled" : ""}`}>
+    <div className="controls-box">
       <h2>Word highlighting</h2>
       <div className="controls">
         <label className="checkbox-label">
@@ -25,7 +24,6 @@ export const WordHighlightControls: React.FC = () => {
             type="checkbox"
             checked={highlightForwards}
             onChange={(e) => setHighlightForwards(e.target.checked)}
-            disabled={isCryptogramActive}
           />
           <span>highlight forwards words</span>
         </label>
@@ -34,7 +32,6 @@ export const WordHighlightControls: React.FC = () => {
             type="checkbox"
             checked={highlightBackwards}
             onChange={(e) => setHighlightBackwards(e.target.checked)}
-            disabled={isCryptogramActive}
           />
           <span>highlight backwards words</span>
         </label>
@@ -46,7 +43,6 @@ export const WordHighlightControls: React.FC = () => {
             type="checkbox"
             checked={highlightForwardsExtra}
             onChange={(e) => setHighlightForwardsExtra(e.target.checked)}
-            disabled={isCryptogramActive}
           />
           <span>highlight forwards words extra</span>
           <span className="tooltip-container">
@@ -62,7 +58,6 @@ export const WordHighlightControls: React.FC = () => {
             type="checkbox"
             checked={highlightBackwardsExtra}
             onChange={(e) => setHighlightBackwardsExtra(e.target.checked)}
-            disabled={isCryptogramActive}
           />
           <span>highlight backwards words extra</span>
           <span className="tooltip-container">
@@ -81,7 +76,6 @@ export const WordHighlightControls: React.FC = () => {
             type="checkbox"
             checked={highlightSecretMessage}
             onChange={(e) => setHighlightSecretMessage(e.target.checked)}
-            disabled={isCryptogramActive}
           />
           <span>highlight secret message letters</span>
         </label>

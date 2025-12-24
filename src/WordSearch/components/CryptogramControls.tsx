@@ -7,6 +7,8 @@ export const CryptogramControls: React.FC = () => {
     setEncodeCryptogram,
     decodeCryptogram,
     setDecodeCryptogram,
+    applyHighlightsToOriginalGrid,
+    setApplyHighlightsToOriginalGrid,
   } = useWordSearchControls();
   return (
     <div className="controls-box">
@@ -37,6 +39,19 @@ export const CryptogramControls: React.FC = () => {
             }}
           />
           <span>Decode puzzle using key</span>
+        </label>
+      </div>
+      <div className="letter-controls-divider"></div>
+      <div className="controls">
+        <label className="toggle-label">
+          <input
+            type="checkbox"
+            className="toggle-input"
+            checked={applyHighlightsToOriginalGrid}
+            onChange={(e) => setApplyHighlightsToOriginalGrid(e.target.checked)}
+          />
+          <span className="toggle-slider"></span>
+          <span>Apply highlights to original grid</span>
         </label>
       </div>
     </div>
