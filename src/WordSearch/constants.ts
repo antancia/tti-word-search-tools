@@ -40,7 +40,7 @@ const forwardsWordsExtra: string[] = ["dose", "erie", "sore"];
 const backwardsWords: string[] = [
   "coke",
   "dirt",
-  "estate",
+  "state",
   "lilac",
   "north",
   "peak",

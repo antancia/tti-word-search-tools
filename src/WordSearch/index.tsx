@@ -222,36 +222,8 @@ export default function WordSearch() {
 
     // Search diagonally
     if (isBackwards) {
-      // For backwards: bottom-right to top-left (down and to the left), and top-right to bottom-left (down and to the left)
+      // For backwards: top-right to bottom-left (read right-to-left going down)
       const reversedWord = wordUpper.split("").reverse().join("");
-
-      // Diagonal: bottom-right to top-left (row decreases, col decreases)
-      for (
-        let startRow = grid.length - 1;
-        startRow >= word.length - 1;
-        startRow--
-      ) {
-        for (
-          let startCol = grid[0].length - 1;
-          startCol >= word.length - 1;
-          startCol--
-        ) {
-          let match = true;
-          const wordPositions: Position[] = [];
-          for (let i = 0; i < word.length; i++) {
-            const row = startRow - i;
-            const col = startCol - i;
-            if (row < 0 || col < 0 || grid[row][col] !== reversedWord[i]) {
-              match = false;
-              break;
-            }
-            wordPositions.push({ row, col });
-          }
-          if (match) {
-            positions.push(wordPositions.reverse()); // Reverse to show as going backwards
-          }
-        }
-      }
 
       // Diagonal: top-right to bottom-left (row increases, col decreases) - read right-to-left going down
       for (
@@ -272,7 +244,7 @@ export default function WordSearch() {
             if (
               row >= grid.length ||
               col < 0 ||
-              grid[row][col] !== wordUpper[i]
+              grid[row][col] !== reversedWord[i]
             ) {
               match = false;
               break;
