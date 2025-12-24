@@ -20,9 +20,7 @@ const forwardsWords: string[] = [
   "anime",
   "count",
   "divide",
-  "dose",
   "eleven",
-  "erie",
   "state",
   "five",
   "lemon",
@@ -32,32 +30,58 @@ const forwardsWords: string[] = [
   "quarry",
   "round",
   "sapphire",
-  "sore",
   "square",
   "three",
   "tron",
 ];
 
+const forwardsWordsExtra: string[] = ["dose", "erie", "sore"];
+
 const backwardsWords: string[] = [
   "coke",
   "dirt",
-  "erie",
   "estate",
   "lilac",
   "north",
   "peak",
-  "ohio",
   "rail",
   "three",
   "twelve",
   "walk",
   "water",
   "west",
-  "yeoman",
   "zero",
 ];
 
-// The key letters are in order of the alphabet. Examples: 
+const backwardsWordsExtra: string[] = ["erie", "ohio", "yeoman"];
+
+// The anagrammed words which spell the secret message in the word search, they are all
+// read left-to-right (aka none vertical)
+const secretMessageWords: string[] = [
+  "reteh", // there
+  "rea", // are
+  "ucsifevle", // five clues
+  "ni", // in
+  "ihst", // this
+  "cehsrardwo", // wordsearch
+  "oubtd", // but do
+  "oeltlnt", // not tell
+  "nyneoa", // anyone
+  "ahreeret", // three are OR there are
+  "on", // on OR no
+  "lpasiec", // special
+  "esdbn", // bends
+  "or", // or
+  "sr",
+  "ntu", // turns
+  "rniema", // remain
+  "adtteyos", // steady to
+  "mtoplece", // complete
+  "het", // the
+  "nsiosmi", // mission
+];
+
+// The key letters are in order of the alphabet. Examples:
 //   A = L
 //   B = G
 //   C = U
@@ -65,7 +89,10 @@ const cryptogramKey = "LGUWV??ROB?TPYHSDIMFCA?ENK";
 
 export {
   backwardsWords,
-  forwardsWords,
+  backwardsWordsExtra,
   cryptogramKey,
+  forwardsWords,
+  forwardsWordsExtra,
   grid,
-}
+  secretMessageWords,
+};
