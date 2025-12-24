@@ -20,6 +20,8 @@ interface WordSearchControlsContextValue {
   setSelectedLetters: (value: Set<string>) => void;
   excludeLettersInWords: boolean;
   setExcludeLettersInWords: (value: boolean) => void;
+  applyHighlightsToOriginalGrid: boolean;
+  setApplyHighlightsToOriginalGrid: (value: boolean) => void;
   isCryptogramActive: boolean;
   cellHighlights: Record<string, CellHighlight>;
   cryptogramEncodeMapping: Record<string, string>;

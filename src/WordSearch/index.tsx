@@ -6,6 +6,7 @@ import {
   backwardsWords,
   backwardsWordsExtra,
   secretMessageWords,
+  grid,
 } from "./constants";
 import { useState, useMemo } from "react";
 import "../App.css";
@@ -38,6 +39,8 @@ export default function WordSearch() {
   );
   const [excludeLettersInWords, setExcludeLettersInWords] =
     useState<boolean>(false);
+  const [applyHighlightsToOriginalGrid, setApplyHighlightsToOriginalGrid] =
+    useState<boolean>(true);
 
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
   const cryptogramEncodeMapping = useMemo(() => {
@@ -65,13 +68,38 @@ export default function WordSearch() {
 
   const isCryptogramActive = encodeCryptogram || decodeCryptogram;
 
-  // Calculate which cells are highlighted
-  const cellHighlights = useMemo(() => {
-    // Don't calculate highlights if cryptogram tool is active
-    if (isCryptogramActive) {
-      return {};
+  // Create transformed grid for word searching when toggle is OFF and cryptogram is active
+  const searchGrid = useMemo(() => {
+    if (applyHighlightsToOriginalGrid || !isCryptogramActive) {
+      return grid;
     }
 
+    // Transform the grid based on encode/decode state
+    return grid.map((row) =>
+      row
+        .split("")
+        .map((letter) => {
+          const upperLetter = letter.toUpperCase();
+          if (encodeCryptogram) {
+            return cryptogramEncodeMapping[upperLetter] || letter;
+          } else if (decodeCryptogram) {
+            return cryptogramDecodeMapping[upperLetter] || letter;
+          }
+          return letter;
+        })
+        .join("")
+    );
+  }, [
+    applyHighlightsToOriginalGrid,
+    isCryptogramActive,
+    encodeCryptogram,
+    decodeCryptogram,
+    cryptogramEncodeMapping,
+    cryptogramDecodeMapping,
+  ]);
+
+  // Calculate which cells are highlighted
+  const cellHighlights = useMemo(() => {
     const highlights: Record<string, CellHighlight> = {};
     const allWordInstances: WordInstance[] = [];
     let forwardsColorIndex = 0;
@@ -80,7 +108,7 @@ export default function WordSearch() {
     // Collect all word instances
     if (highlightForwards) {
       forwardsWords.forEach((word) => {
-        const positions = findWordPositions(word, false);
+        const positions = findWordPositions(word, false, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
             word,
@@ -94,7 +122,7 @@ export default function WordSearch() {
 
     if (highlightForwardsExtra) {
       forwardsWordsExtra.forEach((word) => {
-        const positions = findWordPositions(word, false);
+        const positions = findWordPositions(word, false, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
             word,
@@ -108,7 +136,7 @@ export default function WordSearch() {
 
     if (highlightBackwards) {
       backwardsWords.forEach((word) => {
-        const positions = findWordPositions(word, true);
+        const positions = findWordPositions(word, true, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
             word,
@@ -122,7 +150,7 @@ export default function WordSearch() {
 
     if (highlightBackwardsExtra) {
       backwardsWordsExtra.forEach((word) => {
-        const positions = findWordPositions(word, true);
+        const positions = findWordPositions(word, true, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
             word,
@@ -136,7 +164,8 @@ export default function WordSearch() {
 
     if (highlightSecretMessage) {
       // Find secret message words by sequential scanning
-      const secretMessageInstances = findSecretMessageWordsSequential();
+      const secretMessageInstances =
+        findSecretMessageWordsSequential(searchGrid);
       secretMessageInstances.forEach((instance) => {
         allWordInstances.push({
           ...instance,
@@ -219,7 +248,7 @@ export default function WordSearch() {
     backwardsWords,
     backwardsWordsExtra,
     secretMessageWords,
-    isCryptogramActive,
+    searchGrid,
   ]);
 
   const controlsContextValue = {
@@ -241,6 +270,8 @@ export default function WordSearch() {
     setSelectedLetters,
     excludeLettersInWords,
     setExcludeLettersInWords,
+    applyHighlightsToOriginalGrid,
+    setApplyHighlightsToOriginalGrid,
     isCryptogramActive,
     cellHighlights,
     cryptogramEncodeMapping,

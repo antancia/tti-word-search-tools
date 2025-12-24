@@ -18,15 +18,17 @@ const cryptogramEncodeMapping = () => {
 
 // Find secret message words by scanning sequentially (top to bottom, left to right)
 // Each word is matched once in order, continuing from where the previous match ended
-const findSecretMessageWordsSequential = (): WordInstance[] => {
+const findSecretMessageWordsSequential = (
+  searchGrid: readonly string[] = grid
+): WordInstance[] => {
   const instances: WordInstance[] = [];
   const usedPositions = new Set<string>();
   let currentWordIndex = 0;
   let colorId = 0;
 
   // Scan the grid sequentially from top to bottom, left to right
-  for (let row = 0; row < grid.length; row++) {
-    const rowText = grid[row];
+  for (let row = 0; row < searchGrid.length; row++) {
+    const rowText = searchGrid[row];
 
     // For each starting position in this row
     let startCol = 0;
@@ -92,184 +94,185 @@ const findSecretMessageWordsSequential = (): WordInstance[] => {
   return instances;
 };
 
-  // Find positions of words in the grid
-  const findWordPositions = (
-    word: string,
-    isBackwards: boolean = false
-  ): Position[][] => {
-    const positions: Position[][] = [];
-    const wordUpper = word.toUpperCase();
+// Find positions of words in the grid
+const findWordPositions = (
+  word: string,
+  isBackwards: boolean = false,
+  searchGrid: readonly string[] = grid
+): Position[][] => {
+  const positions: Position[][] = [];
+  const wordUpper = word.toUpperCase();
 
-    // Search horizontally
-    for (let row = 0; row < grid.length; row++) {
-      const rowText = grid[row];
-      if (isBackwards) {
-        // Search right to left - search for reversed word in original text
-        const reversedWord = wordUpper.split("").reverse().join("");
-        let index = rowText.indexOf(reversedWord);
-        while (index !== -1) {
-          const startCol = index + word.length - 1;
-          positions.push(
-            Array.from({ length: word.length }, (_, i) => ({
-              row,
-              col: startCol - i,
-            }))
-          );
-          index = rowText.indexOf(reversedWord, index + 1);
-        }
-      } else {
-        // Search left to right
-        let index = rowText.indexOf(wordUpper);
-        while (index !== -1) {
-          positions.push(
-            Array.from({ length: word.length }, (_, i) => ({
-              row,
-              col: index + i,
-            }))
-          );
-          index = rowText.indexOf(wordUpper, index + 1);
-        }
-      }
-    }
-
-    // Search vertically
-    for (let col = 0; col < grid[0].length; col++) {
-      const colText = grid.map((row) => row[col]).join("");
-      if (isBackwards) {
-        // Search bottom to top - search for reversed word in original text
-        const reversedWord = wordUpper.split("").reverse().join("");
-        let index = colText.indexOf(reversedWord);
-        while (index !== -1) {
-          const startRow = index + word.length - 1;
-          positions.push(
-            Array.from({ length: word.length }, (_, i) => ({
-              row: startRow - i,
-              col,
-            }))
-          );
-          index = colText.indexOf(reversedWord, index + 1);
-        }
-      } else {
-        // Search top to bottom
-        let index = colText.indexOf(wordUpper);
-        while (index !== -1) {
-          positions.push(
-            Array.from({ length: word.length }, (_, i) => ({
-              row: index + i,
-              col,
-            }))
-          );
-          index = colText.indexOf(wordUpper, index + 1);
-        }
-      }
-    }
-
-    // Search diagonally
+  // Search horizontally
+  for (let row = 0; row < searchGrid.length; row++) {
+    const rowText = searchGrid[row];
     if (isBackwards) {
-      // For backwards: top-right to bottom-left (read right-to-left going down)
+      // Search right to left - search for reversed word in original text
       const reversedWord = wordUpper.split("").reverse().join("");
-
-      // Diagonal: top-right to bottom-left (row increases, col decreases) - read right-to-left going down
-      for (
-        let startRow = 0;
-        startRow <= grid.length - word.length;
-        startRow++
-      ) {
-        for (
-          let startCol = word.length - 1;
-          startCol < grid[0].length;
-          startCol++
-        ) {
-          let match = true;
-          const wordPositions: Position[] = [];
-          for (let i = 0; i < word.length; i++) {
-            const row = startRow + i;
-            const col = startCol - i;
-            if (
-              row >= grid.length ||
-              col < 0 ||
-              grid[row][col] !== reversedWord[i]
-            ) {
-              match = false;
-              break;
-            }
-            wordPositions.push({ row, col });
-          }
-          if (match) {
-            positions.push(wordPositions.reverse()); // Reverse to show as going backwards
-          }
-        }
+      let index = rowText.indexOf(reversedWord);
+      while (index !== -1) {
+        const startCol = index + word.length - 1;
+        positions.push(
+          Array.from({ length: word.length }, (_, i) => ({
+            row,
+            col: startCol - i,
+          }))
+        );
+        index = rowText.indexOf(reversedWord, index + 1);
       }
     } else {
-      // For forwards: top-left to bottom-right (down and to the right), and top-right to bottom-left (down and to the right)
+      // Search left to right
+      let index = rowText.indexOf(wordUpper);
+      while (index !== -1) {
+        positions.push(
+          Array.from({ length: word.length }, (_, i) => ({
+            row,
+            col: index + i,
+          }))
+        );
+        index = rowText.indexOf(wordUpper, index + 1);
+      }
+    }
+  }
 
-      // Diagonal: top-left to bottom-right (row increases, col increases)
+  // Search vertically
+  for (let col = 0; col < searchGrid[0].length; col++) {
+    const colText = searchGrid.map((row) => row[col]).join("");
+    if (isBackwards) {
+      // Search bottom to top - search for reversed word in original text
+      const reversedWord = wordUpper.split("").reverse().join("");
+      let index = colText.indexOf(reversedWord);
+      while (index !== -1) {
+        const startRow = index + word.length - 1;
+        positions.push(
+          Array.from({ length: word.length }, (_, i) => ({
+            row: startRow - i,
+            col,
+          }))
+        );
+        index = colText.indexOf(reversedWord, index + 1);
+      }
+    } else {
+      // Search top to bottom
+      let index = colText.indexOf(wordUpper);
+      while (index !== -1) {
+        positions.push(
+          Array.from({ length: word.length }, (_, i) => ({
+            row: index + i,
+            col,
+          }))
+        );
+        index = colText.indexOf(wordUpper, index + 1);
+      }
+    }
+  }
+
+  // Search diagonally
+  if (isBackwards) {
+    // For backwards: top-right to bottom-left (read right-to-left going down)
+    const reversedWord = wordUpper.split("").reverse().join("");
+
+    // Diagonal: top-right to bottom-left (row increases, col decreases) - read right-to-left going down
+    for (
+      let startRow = 0;
+      startRow <= searchGrid.length - word.length;
+      startRow++
+    ) {
       for (
-        let startRow = 0;
-        startRow <= grid.length - word.length;
-        startRow++
+        let startCol = word.length - 1;
+        startCol < searchGrid[0].length;
+        startCol++
       ) {
-        for (
-          let startCol = 0;
-          startCol <= grid[0].length - word.length;
-          startCol++
-        ) {
-          let match = true;
-          const wordPositions: Position[] = [];
-          for (let i = 0; i < word.length; i++) {
-            const row = startRow + i;
-            const col = startCol + i;
-            if (
-              row >= grid.length ||
-              col >= grid[0].length ||
-              grid[row][col] !== wordUpper[i]
-            ) {
-              match = false;
-              break;
-            }
-            wordPositions.push({ row, col });
+        let match = true;
+        const wordPositions: Position[] = [];
+        for (let i = 0; i < word.length; i++) {
+          const row = startRow + i;
+          const col = startCol - i;
+          if (
+            row >= searchGrid.length ||
+            col < 0 ||
+            searchGrid[row][col] !== reversedWord[i]
+          ) {
+            match = false;
+            break;
           }
-          if (match) {
-            positions.push(wordPositions);
-          }
+          wordPositions.push({ row, col });
+        }
+        if (match) {
+          positions.push(wordPositions.reverse()); // Reverse to show as going backwards
         }
       }
+    }
+  } else {
+    // For forwards: top-left to bottom-right (down and to the right), and top-right to bottom-left (down and to the right)
 
-      // Diagonal: bottom-left to top-right (row decreases, col increases) - read top-to-bottom going to the right
+    // Diagonal: top-left to bottom-right (row increases, col increases)
+    for (
+      let startRow = 0;
+      startRow <= searchGrid.length - word.length;
+      startRow++
+    ) {
       for (
-        let startRow = grid.length - 1;
-        startRow >= word.length - 1;
-        startRow--
+        let startCol = 0;
+        startCol <= searchGrid[0].length - word.length;
+        startCol++
       ) {
-        for (
-          let startCol = 0;
-          startCol <= grid[0].length - word.length;
-          startCol++
-        ) {
-          let match = true;
-          const wordPositions: Position[] = [];
-          for (let i = 0; i < word.length; i++) {
-            const row = startRow - i;
-            const col = startCol + i;
-            if (
-              row < 0 ||
-              col >= grid[0].length ||
-              grid[row][col] !== wordUpper[i]
-            ) {
-              match = false;
-              break;
-            }
-            wordPositions.push({ row, col });
+        let match = true;
+        const wordPositions: Position[] = [];
+        for (let i = 0; i < word.length; i++) {
+          const row = startRow + i;
+          const col = startCol + i;
+          if (
+            row >= searchGrid.length ||
+            col >= searchGrid[0].length ||
+            searchGrid[row][col] !== wordUpper[i]
+          ) {
+            match = false;
+            break;
           }
-          if (match) {
-            positions.push(wordPositions.reverse()); // Reverse to show as reading top-to-bottom
-          }
+          wordPositions.push({ row, col });
+        }
+        if (match) {
+          positions.push(wordPositions);
         }
       }
     }
 
-    return positions;
-  };
+    // Diagonal: bottom-left to top-right (row decreases, col increases) - read top-to-bottom going to the right
+    for (
+      let startRow = searchGrid.length - 1;
+      startRow >= word.length - 1;
+      startRow--
+    ) {
+      for (
+        let startCol = 0;
+        startCol <= searchGrid[0].length - word.length;
+        startCol++
+      ) {
+        let match = true;
+        const wordPositions: Position[] = [];
+        for (let i = 0; i < word.length; i++) {
+          const row = startRow - i;
+          const col = startCol + i;
+          if (
+            row < 0 ||
+            col >= searchGrid[0].length ||
+            searchGrid[row][col] !== wordUpper[i]
+          ) {
+            match = false;
+            break;
+          }
+          wordPositions.push({ row, col });
+        }
+        if (match) {
+          positions.push(wordPositions.reverse()); // Reverse to show as reading top-to-bottom
+        }
+      }
+    }
+  }
+
+  return positions;
+};
 
   // Helper function to check if two positions are adjacent (share an edge)
   const areAdjacent = (pos1: Position, pos2: Position): boolean => {
