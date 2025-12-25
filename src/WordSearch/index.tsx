@@ -1,3 +1,5 @@
+import { DisclosureGroup, Separator } from "@heroui/react";
+
 import {
   ALPHABET,
   CRYPTOGRAM_KEY,
@@ -22,7 +24,6 @@ import { LetterHighlightControls } from "./components/LetterHighlightControls";
 import { CryptogramControls } from "./components/CryptogramControls";
 import { WordSearchControlsProvider } from "./WordSearchControlsContext";
 import { Grid } from "./components/Grid";
-import { Button } from "@heroui/react";
 
 export default function WordSearch() {
   const [highlightForwards, setHighlightForwards] = useState<boolean>(false);
@@ -42,6 +43,10 @@ export default function WordSearch() {
     useState<boolean>(false);
   const [applyHighlightsToOriginalGrid, setApplyHighlightsToOriginalGrid] =
     useState<boolean>(true);
+
+  const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(
+    new Set(["word-highlighting", "letter-highlighting", "cryptogram-tools"])
+  );
 
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
   const cryptogramEncodeMapping = useMemo(() => {
@@ -281,13 +286,22 @@ export default function WordSearch() {
 
   return (
     <WordSearchControlsProvider value={controlsContextValue}>
-      <div className="app">
-        <h1 className="text-2xl font-bold">Past & Future Box Word Search</h1>
-        <div className="main-content">
-          <div className="controls-column">
-            <WordHighlightControls />
-            <LetterHighlightControls />
-            <CryptogramControls />
+      <div className="flex flex-col">
+        <div className="flex justify-center py-10">
+          <h1 className="uppercase text-2xl font-bold tracking-wide">
+            Past & Future Box Word Search
+          </h1>
+        </div>
+        <div className="flex flex-row gap-8 justify-center items-start">
+          <div>
+            <DisclosureGroup
+              expandedKeys={expandedKeys}
+              onExpandedChange={setExpandedKeys}
+            >
+              <WordHighlightControls />
+              <LetterHighlightControls />
+              <CryptogramControls />
+            </DisclosureGroup>
           </div>
           <Grid />
         </div>
@@ -295,4 +309,3 @@ export default function WordSearch() {
     </WordSearchControlsProvider>
   );
 }
-
