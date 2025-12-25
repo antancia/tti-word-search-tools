@@ -1,5 +1,5 @@
 import React from "react";
-import { Disclosure, Separator } from "@heroui/react";
+import { Disclosure, Separator, Button } from "@heroui/react";
 import { ALPHABET } from "../constants";
 import { useWordSearchControls } from "../WordSearchControlsContext";
 import { ControlPanelHeader } from "./ControlPanelHeader";
@@ -54,6 +54,18 @@ export const LetterHighlightControls: React.FC = () => {
                     <span>{letter}</span>
                   </label>
                 ))}
+              </div>
+              <Separator className="my-3" />
+              <div className="pb-5">
+                <Button
+                  variant="secondary"
+                  onPress={() => {
+                    setSelectedLetters(new Set());
+                    setExcludeLettersInWords(false);
+                  }}
+                >
+                  Clear All
+                </Button>
               </div>
             </div>
           </Disclosure.Body>
