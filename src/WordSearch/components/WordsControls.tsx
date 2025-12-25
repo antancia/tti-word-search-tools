@@ -180,7 +180,7 @@ export const WordsControls: React.FC = () => {
                 onExpandedChange={setExpandedSubSections}
               >
                 <WordListSection
-                  title="Forwards Words"
+                  title="Forwards words"
                   words={forwardsWords}
                   onAddWord={(word) =>
                     addWord(word, forwardsWords, setForwardsWords)
@@ -194,7 +194,7 @@ export const WordsControls: React.FC = () => {
                   }
                 />
                 <WordListSection
-                  title="Forwards Words Extra"
+                  title="Forwards words extra"
                   words={forwardsWordsExtra}
                   onAddWord={(word) =>
                     addWord(word, forwardsWordsExtra, setForwardsWordsExtra)
@@ -208,7 +208,7 @@ export const WordsControls: React.FC = () => {
                   }
                 />
                 <WordListSection
-                  title="Backwards Words"
+                  title="Backwards words"
                   words={backwardsWords}
                   onAddWord={(word) =>
                     addWord(word, backwardsWords, setBackwardsWords)
@@ -222,7 +222,7 @@ export const WordsControls: React.FC = () => {
                   }
                 />
                 <WordListSection
-                  title="Backwards Words Extra"
+                  title="Backwards words extra"
                   words={backwardsWordsExtra}
                   onAddWord={(word) =>
                     addWord(word, backwardsWordsExtra, setBackwardsWordsExtra)
@@ -240,7 +240,7 @@ export const WordsControls: React.FC = () => {
                   }
                 />
                 <WordListSection
-                  title="Secret Message Words"
+                  title="Secret message words"
                   words={secretMessageWords}
                   onAddWord={(word) =>
                     addWord(word, secretMessageWords, setSecretMessageWords)
@@ -255,14 +255,14 @@ export const WordsControls: React.FC = () => {
                 />
               </DisclosureGroup>
             </div>
-            <div className="px-5 pt-4 border-t">
+            <div className="px-5 py-1 border-t">
               <Button
                 size="sm"
                 variant="tertiary"
                 onPress={handleResetAllToDefault}
                 className="w-full"
               >
-                Reset All Words to Default
+                Reset all words to default
               </Button>
             </div>
           </Disclosure.Body>

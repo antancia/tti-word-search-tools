@@ -66,7 +66,7 @@ export const CryptogramControls: React.FC = () => {
                 </label>
               </div>
               <Separator className="my-3" />
-              <div className="pb-5">
+              <div className="pb-1">
                 <Button
                   variant="secondary"
                   onPress={() => {
@@ -75,7 +75,7 @@ export const CryptogramControls: React.FC = () => {
                     setApplyHighlightsToOriginalGrid(false);
                   }}
                 >
-                  Clear All
+                  Clear all
                 </Button>
               </div>
             </div>

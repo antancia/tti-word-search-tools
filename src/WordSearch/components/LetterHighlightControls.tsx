@@ -56,7 +56,7 @@ export const LetterHighlightControls: React.FC = () => {
                 ))}
               </div>
               <Separator className="my-3" />
-              <div className="pb-5">
+              <div className="pb-1">
                 <Button
                   variant="secondary"
                   onPress={() => {
@@ -64,7 +64,7 @@ export const LetterHighlightControls: React.FC = () => {
                     setExcludeLettersInWords(false);
                   }}
                 >
-                  Clear All
+                  Clear all
                 </Button>
               </div>
             </div>
