@@ -1,5 +1,5 @@
 import React from "react";
-import { Disclosure, Separator } from "@heroui/react";
+import { Disclosure, Separator, Button } from "@heroui/react";
 import { useWordSearchControls } from "../WordSearchControlsContext";
 import { ControlPanelHeader } from "./ControlPanelHeader";
 
@@ -94,6 +94,21 @@ export const WordHighlightControls: React.FC = () => {
                   />
                   <span>highlight secret message letters</span>
                 </label>
+              </div>
+              <Separator className="my-3" />
+              <div className="pb-5">
+                <Button
+                  variant="secondary"
+                  onPress={() => {
+                    setHighlightForwards(false);
+                    setHighlightForwardsExtra(false);
+                    setHighlightBackwards(false);
+                    setHighlightBackwardsExtra(false);
+                    setHighlightSecretMessage(false);
+                  }}
+                >
+                  Clear All
+                </Button>
               </div>
             </div>
           </Disclosure.Body>
