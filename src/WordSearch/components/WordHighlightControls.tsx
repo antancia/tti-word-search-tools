@@ -96,7 +96,7 @@ export const WordHighlightControls: React.FC = () => {
                 </label>
               </div>
               <Separator className="my-3" />
-              <div className="pb-5">
+              <div className="pb-1">
                 <Button
                   variant="secondary"
                   onPress={() => {
@@ -107,7 +107,7 @@ export const WordHighlightControls: React.FC = () => {
                     setHighlightSecretMessage(false);
                   }}
                 >
-                  Clear All
+                  Clear all
                 </Button>
               </div>
             </div>
