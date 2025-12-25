@@ -1,4 +1,4 @@
-import { DisclosureGroup, Separator } from "@heroui/react";
+import { DisclosureGroup } from "@heroui/react";
 
 import {
   ALPHABET,
@@ -22,6 +22,7 @@ import {
 import { WordHighlightControls } from "./components/WordHighlightControls";
 import { LetterHighlightControls } from "./components/LetterHighlightControls";
 import { CryptogramControls } from "./components/CryptogramControls";
+import { WordsControls } from "./components/WordsControls";
 import { WordSearchControlsProvider } from "./WordSearchControlsContext";
 import { Grid } from "./components/Grid";
 
@@ -44,8 +45,30 @@ export default function WordSearch() {
   const [applyHighlightsToOriginalGrid, setApplyHighlightsToOriginalGrid] =
     useState<boolean>(true);
 
+  // Word lists state - default to constants
+  const [forwardsWordsState, setForwardsWordsState] = useState<string[]>(
+    Array.from(forwardsWords)
+  );
+  const [forwardsWordsExtraState, setForwardsWordsExtraState] = useState<
+    string[]
+  >(Array.from(forwardsWordsExtra));
+  const [backwardsWordsState, setBackwardsWordsState] = useState<string[]>(
+    Array.from(backwardsWords)
+  );
+  const [backwardsWordsExtraState, setBackwardsWordsExtraState] = useState<
+    string[]
+  >(Array.from(backwardsWordsExtra));
+  const [secretMessageWordsState, setSecretMessageWordsState] = useState<
+    string[]
+  >(Array.from(secretMessageWords));
+
   const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(
-    new Set(["word-highlighting", "letter-highlighting", "cryptogram-tools"])
+    new Set([
+      "words",
+      "word-highlighting",
+      "letter-highlighting",
+      "cryptogram-tools",
+    ])
   );
 
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
@@ -113,7 +136,7 @@ export default function WordSearch() {
 
     // Collect all word instances
     if (highlightForwards) {
-      forwardsWords.forEach((word) => {
+      forwardsWordsState.forEach((word) => {
         const positions = findWordPositions(word, false, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
@@ -127,7 +150,7 @@ export default function WordSearch() {
     }
 
     if (highlightForwardsExtra) {
-      forwardsWordsExtra.forEach((word) => {
+      forwardsWordsExtraState.forEach((word) => {
         const positions = findWordPositions(word, false, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
@@ -141,7 +164,7 @@ export default function WordSearch() {
     }
 
     if (highlightBackwards) {
-      backwardsWords.forEach((word) => {
+      backwardsWordsState.forEach((word) => {
         const positions = findWordPositions(word, true, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
@@ -155,7 +178,7 @@ export default function WordSearch() {
     }
 
     if (highlightBackwardsExtra) {
-      backwardsWordsExtra.forEach((word) => {
+      backwardsWordsExtraState.forEach((word) => {
         const positions = findWordPositions(word, true, searchGrid);
         positions.forEach((wordPositions) => {
           allWordInstances.push({
@@ -170,8 +193,10 @@ export default function WordSearch() {
 
     if (highlightSecretMessage) {
       // Find secret message words by sequential scanning
-      const secretMessageInstances =
-        findSecretMessageWordsSequential(searchGrid);
+      const secretMessageInstances = findSecretMessageWordsSequential(
+        secretMessageWordsState,
+        searchGrid
+      );
       secretMessageInstances.forEach((instance) => {
         allWordInstances.push({
           ...instance,
@@ -249,11 +274,11 @@ export default function WordSearch() {
     highlightBackwards,
     highlightBackwardsExtra,
     highlightSecretMessage,
-    forwardsWords,
-    forwardsWordsExtra,
-    backwardsWords,
-    backwardsWordsExtra,
-    secretMessageWords,
+    forwardsWordsState,
+    forwardsWordsExtraState,
+    backwardsWordsState,
+    backwardsWordsExtraState,
+    secretMessageWordsState,
     searchGrid,
   ]);
 
@@ -278,6 +303,16 @@ export default function WordSearch() {
     setExcludeLettersInWords,
     applyHighlightsToOriginalGrid,
     setApplyHighlightsToOriginalGrid,
+    forwardsWords: forwardsWordsState,
+    setForwardsWords: setForwardsWordsState,
+    forwardsWordsExtra: forwardsWordsExtraState,
+    setForwardsWordsExtra: setForwardsWordsExtraState,
+    backwardsWords: backwardsWordsState,
+    setBackwardsWords: setBackwardsWordsState,
+    backwardsWordsExtra: backwardsWordsExtraState,
+    setBackwardsWordsExtra: setBackwardsWordsExtraState,
+    secretMessageWords: secretMessageWordsState,
+    setSecretMessageWords: setSecretMessageWordsState,
     isCryptogramActive,
     cellHighlights,
     cryptogramEncodeMapping,
@@ -298,6 +333,7 @@ export default function WordSearch() {
               expandedKeys={expandedKeys}
               onExpandedChange={setExpandedKeys}
             >
+              <WordsControls />
               <WordHighlightControls />
               <LetterHighlightControls />
               <CryptogramControls />
