@@ -22,6 +22,7 @@ import { LetterHighlightControls } from "./components/LetterHighlightControls";
 import { CryptogramControls } from "./components/CryptogramControls";
 import { WordSearchControlsProvider } from "./WordSearchControlsContext";
 import { Grid } from "./components/Grid";
+import { Button } from "@heroui/react";
 
 export default function WordSearch() {
   const [highlightForwards, setHighlightForwards] = useState<boolean>(false);
@@ -281,7 +282,7 @@ export default function WordSearch() {
   return (
     <WordSearchControlsProvider value={controlsContextValue}>
       <div className="app">
-        <h1>Past & Future Box Word Search</h1>
+        <h1 className="text-2xl font-bold">Past & Future Box Word Search</h1>
         <div className="main-content">
           <div className="controls-column">
             <WordHighlightControls />
