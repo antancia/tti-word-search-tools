@@ -22,6 +22,16 @@ interface WordSearchControlsContextValue {
   setExcludeLettersInWords: (value: boolean) => void;
   applyHighlightsToOriginalGrid: boolean;
   setApplyHighlightsToOriginalGrid: (value: boolean) => void;
+  forwardsWords: string[];
+  setForwardsWords: (words: string[]) => void;
+  forwardsWordsExtra: string[];
+  setForwardsWordsExtra: (words: string[]) => void;
+  backwardsWords: string[];
+  setBackwardsWords: (words: string[]) => void;
+  backwardsWordsExtra: string[];
+  setBackwardsWordsExtra: (words: string[]) => void;
+  secretMessageWords: string[];
+  setSecretMessageWords: (words: string[]) => void;
   isCryptogramActive: boolean;
   cellHighlights: Record<string, CellHighlight>;
   cryptogramEncodeMapping: Record<string, string>;

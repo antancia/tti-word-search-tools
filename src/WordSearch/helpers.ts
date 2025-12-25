@@ -1,8 +1,4 @@
-import {
-  CRYPTOGRAM_KEY,
-  secretMessageWords,
-  grid,
-} from "./constants";
+import { CRYPTOGRAM_KEY, grid } from "./constants";
 import { Position, WordInstance} from "./types"
 
 const cryptogramEncodeMapping = () => {
@@ -19,6 +15,7 @@ const cryptogramEncodeMapping = () => {
 // Find secret message words by scanning sequentially (top to bottom, left to right)
 // Each word is matched once in order, continuing from where the previous match ended
 const findSecretMessageWordsSequential = (
+  secretMessageWords: readonly string[],
   searchGrid: readonly string[] = grid
 ): WordInstance[] => {
   const instances: WordInstance[] = [];
