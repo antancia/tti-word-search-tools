@@ -36,6 +36,10 @@ interface WordSearchControlsContextValue {
   cellHighlights: Record<string, CellHighlight>;
   cryptogramEncodeMapping: Record<string, string>;
   cryptogramDecodeMapping: Record<string, string>;
+  manualHighlights: Record<string, number>; // cell key -> color group (0-5, 0 = no highlight)
+  setManualHighlights: (highlights: Record<string, number>) => void;
+  colorGroupRotations: number[]; // rotation value for each color group (0-5)
+  setColorGroupRotations: (rotations: number[]) => void;
 }
 
 const WordSearchControlsContext = createContext<

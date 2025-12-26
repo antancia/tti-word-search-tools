@@ -63,6 +63,7 @@ export const LetterHighlightControls: React.FC = () => {
                     setSelectedLetters(new Set());
                     setExcludeLettersInWords(false);
                   }}
+                  className="w-full"
                 >
                   Clear all
                 </Button>

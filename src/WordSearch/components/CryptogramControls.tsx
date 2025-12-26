@@ -74,6 +74,7 @@ export const CryptogramControls: React.FC = () => {
                     setDecodeCryptogram(false);
                     setApplyHighlightsToOriginalGrid(false);
                   }}
+                  className="w-full"
                 >
                   Clear all
                 </Button>

@@ -1,5 +1,5 @@
-import { CRYPTOGRAM_KEY, grid } from "./constants";
-import { Position, WordInstance} from "./types"
+import { CRYPTOGRAM_KEY, grid, ALPHABET } from "./constants";
+import { Position, WordInstance } from "./types";
 
 const cryptogramEncodeMapping = () => {
   const mapping: Record<string, string> = {};
@@ -271,87 +271,98 @@ const findWordPositions = (
   return positions;
 };
 
-  // Helper function to check if two positions are adjacent (share an edge)
-  const areAdjacent = (pos1: Position, pos2: Position): boolean => {
-    const rowDiff = Math.abs(pos1.row - pos2.row);
-    const colDiff = Math.abs(pos1.col - pos2.col);
-    return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
-  };
+// Helper function to check if two positions are adjacent (share an edge)
+const areAdjacent = (pos1: Position, pos2: Position): boolean => {
+  const rowDiff = Math.abs(pos1.row - pos2.row);
+  const colDiff = Math.abs(pos1.col - pos2.col);
+  return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+};
 
-  // Helper function to check if two word instances share an edge
-  const shareEdge = (
-    instance1: WordInstance,
-    instance2: WordInstance
-  ): boolean => {
-    for (const pos1 of instance1.positions) {
-      for (const pos2 of instance2.positions) {
-        if (areAdjacent(pos1, pos2)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  // Helper function to check if two word instances overlap
-  const overlap = (
-    instance1: WordInstance,
-    instance2: WordInstance
-  ): boolean => {
-    const posSet1 = new Set(
-      instance1.positions.map((p) => `${p.row},${p.col}`)
-    );
+// Helper function to check if two word instances share an edge
+const shareEdge = (
+  instance1: WordInstance,
+  instance2: WordInstance
+): boolean => {
+  for (const pos1 of instance1.positions) {
     for (const pos2 of instance2.positions) {
-      if (posSet1.has(`${pos2.row},${pos2.col}`)) {
+      if (areAdjacent(pos1, pos2)) {
         return true;
       }
     }
-    return false;
-  };
+  }
+  return false;
+};
 
-    // Helper function to blend colors
-  const blendColors = (colors: string[]): string => {
-    if (colors.length === 0) return "";
-    if (colors.length === 1) return colors[0];
+// Helper function to check if two word instances overlap
+const overlap = (instance1: WordInstance, instance2: WordInstance): boolean => {
+  const posSet1 = new Set(instance1.positions.map((p) => `${p.row},${p.col}`));
+  for (const pos2 of instance2.positions) {
+    if (posSet1.has(`${pos2.row},${pos2.col}`)) {
+      return true;
+    }
+  }
+  return false;
+};
 
-    // Extract RGBA values and average them
-    const rgbaValues = colors
-      .map((color) => {
-        const match = color.match(
-          /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/
-        );
-        if (!match) return null;
-        return {
-          r: parseInt(match[1]),
-          g: parseInt(match[2]),
-          b: parseInt(match[3]),
-          a: match[4] ? parseFloat(match[4]) : 1,
-        };
-      })
-      .filter((v) => v !== null) as Array<{
-      r: number;
-      g: number;
-      b: number;
-      a: number;
-    }>;
+// Helper function to blend colors
+const blendColors = (colors: string[]): string => {
+  if (colors.length === 0) return "";
+  if (colors.length === 1) return colors[0];
 
-    if (rgbaValues.length === 0) return "";
+  // Extract RGBA values and average them
+  const rgbaValues = colors
+    .map((color) => {
+      const match = color.match(
+        /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/
+      );
+      if (!match) return null;
+      return {
+        r: parseInt(match[1]),
+        g: parseInt(match[2]),
+        b: parseInt(match[3]),
+        a: match[4] ? parseFloat(match[4]) : 1,
+      };
+    })
+    .filter((v) => v !== null) as Array<{
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  }>;
 
-    const avg = rgbaValues.reduce(
-      (acc, val) => ({
-        r: acc.r + val.r,
-        g: acc.g + val.g,
-        b: acc.b + val.b,
-        a: acc.a + val.a,
-      }),
-      { r: 0, g: 0, b: 0, a: 0 }
-    );
+  if (rgbaValues.length === 0) return "";
 
-    const count = rgbaValues.length;
-    return `rgba(${Math.round(avg.r / count)}, ${Math.round(
-      avg.g / count
-    )}, ${Math.round(avg.b / count)}, ${Math.min(0.9, avg.a / count + 0.1)})`;
-  };
+  const avg = rgbaValues.reduce(
+    (acc, val) => ({
+      r: acc.r + val.r,
+      g: acc.g + val.g,
+      b: acc.b + val.b,
+      a: acc.a + val.a,
+    }),
+    { r: 0, g: 0, b: 0, a: 0 }
+  );
+
+  const count = rgbaValues.length;
+  return `rgba(${Math.round(avg.r / count)}, ${Math.round(
+    avg.g / count
+  )}, ${Math.round(avg.b / count)}, ${Math.min(0.9, avg.a / count + 0.1)})`;
+};
+
+// Rotate a letter by a given amount in the alphabet (positive = forward, negative = backward)
+// Handles wrapping around the alphabet (Z + 1 = A, A - 1 = Z)
+const rotateLetter = (letter: string, rotation: number): string => {
+  const upperLetter = letter.toUpperCase();
+  if (!ALPHABET.includes(upperLetter)) {
+    return letter; // Return non-alphabetic characters unchanged
+  }
+
+  const currentIndex = ALPHABET.indexOf(upperLetter);
+  const newIndex = (currentIndex + rotation + 26) % 26;
+  const rotatedLetter = ALPHABET[newIndex];
+
+  // Preserve original case
+  return letter === upperLetter ? rotatedLetter : rotatedLetter.toLowerCase();
+};
 
 export {
   blendColors,
@@ -360,4 +371,5 @@ export {
   findWordPositions,
   overlap,
   shareEdge,
+  rotateLetter,
 };
