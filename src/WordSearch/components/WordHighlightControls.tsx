@@ -106,6 +106,7 @@ export const WordHighlightControls: React.FC = () => {
                     setHighlightBackwardsExtra(false);
                     setHighlightSecretMessage(false);
                   }}
+                  className="w-full"
                 >
                   Clear all
                 </Button>

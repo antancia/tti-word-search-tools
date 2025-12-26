@@ -14,7 +14,7 @@ export const ControlPanelHeader: React.FC<
       slot="trigger"
       size="lg"
       variant="ghost"
-      className="flex justify-between bg-inherit hover:bg-inherit transition-none uppercase tracking-wide"
+      className="flex justify-between bg-inherit hover:bg-inherit transition-none transform-none uppercase tracking-wide "
     >
       {title}
       <Disclosure.Indicator />

@@ -23,6 +23,7 @@ import { WordHighlightControls } from "./components/WordHighlightControls";
 import { LetterHighlightControls } from "./components/LetterHighlightControls";
 import { CryptogramControls } from "./components/CryptogramControls";
 import { WordsControls } from "./components/WordsControls";
+import { ManualHighlightingControls } from "./components/ManualHighlightingControls";
 import { WordSearchControlsProvider } from "./WordSearchControlsContext";
 import { Grid } from "./components/Grid";
 
@@ -62,13 +63,16 @@ export default function WordSearch() {
     string[]
   >(Array.from(secretMessageWords));
 
+  // Manual highlighting state
+  const [manualHighlights, setManualHighlights] = useState<
+    Record<string, number>
+  >({}); // cell key -> color group (0-5, 0 = no highlight)
+  const [colorGroupRotations, setColorGroupRotations] = useState<number[]>(
+    new Array(6).fill(0) // 6 color groups (1-5), index 0 unused
+  );
+
   const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(
-    new Set([
-      "words",
-      "word-highlighting",
-      "letter-highlighting",
-      "cryptogram-tools",
-    ])
+    new Set([])
   );
 
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
@@ -317,6 +321,10 @@ export default function WordSearch() {
     cellHighlights,
     cryptogramEncodeMapping,
     cryptogramDecodeMapping,
+    manualHighlights,
+    setManualHighlights,
+    colorGroupRotations,
+    setColorGroupRotations,
   };
 
   return (
@@ -337,6 +345,7 @@ export default function WordSearch() {
               <WordHighlightControls />
               <LetterHighlightControls />
               <CryptogramControls />
+              <ManualHighlightingControls />
             </DisclosureGroup>
           </div>
           <Grid />
