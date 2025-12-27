@@ -19,7 +19,6 @@ import {
   overlap,
   shareEdge,
 } from "./helpers";
-import { WordHighlightControls } from "./components/WordHighlightControls";
 import { LetterHighlightControls } from "./components/LetterHighlightControls";
 import { CryptogramControls } from "./components/CryptogramControls";
 import { WordsControls } from "./components/WordsControls";
@@ -44,7 +43,7 @@ export default function WordSearch() {
   const [excludeLettersInWords, setExcludeLettersInWords] =
     useState<boolean>(false);
   const [applyHighlightsToOriginalGrid, setApplyHighlightsToOriginalGrid] =
-    useState<boolean>(true);
+    useState<boolean>(false);
 
   // Word lists state - default to constants
   const [forwardsWordsState, setForwardsWordsState] = useState<string[]>(
@@ -75,29 +74,32 @@ export default function WordSearch() {
     new Set([])
   );
 
+  // Cryptogram key state
+  const [cryptogramKey, setCryptogramKey] = useState<string>(CRYPTOGRAM_KEY);
+
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
   const cryptogramEncodeMapping = useMemo(() => {
     const mapping: Record<string, string> = {};
     for (let i = 0; i < ALPHABET.length; i++) {
-      const keyLetter = CRYPTOGRAM_KEY[i];
+      const keyLetter = cryptogramKey[i];
       const letter = ALPHABET[i];
       mapping[letter] = keyLetter === "?" ? "?" : keyLetter;
     }
     return mapping;
-  }, []);
+  }, [cryptogramKey]);
 
   // Create reverse mapping from cryptogram key letter to original letter (decoding)
   const cryptogramDecodeMapping = useMemo(() => {
     const mapping: Record<string, string> = {};
     for (let i = 0; i < ALPHABET.length; i++) {
-      const keyLetter = CRYPTOGRAM_KEY[i];
+      const keyLetter = cryptogramKey[i];
       const letter = ALPHABET[i];
       if (keyLetter !== "?") {
         mapping[keyLetter] = letter;
       }
     }
     return mapping;
-  }, []);
+  }, [cryptogramKey]);
 
   const isCryptogramActive = encodeCryptogram || decodeCryptogram;
 
@@ -325,6 +327,8 @@ export default function WordSearch() {
     setManualHighlights,
     colorGroupRotations,
     setColorGroupRotations,
+    cryptogramKey,
+    setCryptogramKey,
   };
 
   return (
@@ -342,7 +346,6 @@ export default function WordSearch() {
               onExpandedChange={setExpandedKeys}
             >
               <WordsControls />
-              <WordHighlightControls />
               <LetterHighlightControls />
               <CryptogramControls />
               <ManualHighlightingControls />

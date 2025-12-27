@@ -11,11 +11,15 @@ export const LetterHighlightControls: React.FC = () => {
     excludeLettersInWords,
     setExcludeLettersInWords,
   } = useWordSearchControls();
+
+  // Check if any letters are selected or exclude option is on
+  const isModified = selectedLetters.size > 0 || excludeLettersInWords;
+
   return (
     <div className="controls-box">
       <Disclosure id="letter-highlighting" aria-label="Letter Highlighting">
         <Disclosure.Heading>
-          <ControlPanelHeader title="Letter Highlighting" />
+          <ControlPanelHeader title="Letter Highlighting" isModified={isModified} />
         </Disclosure.Heading>
         <Disclosure.Content>
           <Disclosure.Body>

@@ -2,6 +2,18 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 // The key letters are in order of the alphabet. Examples: A = L, B = G, etc.
 const CRYPTOGRAM_KEY = "LGUWV??ROB?TPYHSDIMFCA?ENK";
 
+// Poem keys derived from the poem:
+// "From rock to field from strong to stream,
+//  past tree and posts to forest green,
+//  arrive you now where beauty sheens.
+//  It's under, over, in between."
+
+// First letter of each word (F=6, R=18, T=20, etc.) maps to alphabet positions
+const POEM_FIRST_LETTER_KEY = "FRTFFSTSTAPTFGAYNWBSIUOIB";
+
+// Last letter of each word (M=13, K=11, O=15, etc.) maps to alphabet positions
+const POEM_LAST_LETTER_KEY = "MKODMGOMTEDSOTNEUWEYSSRRNN";
+
 // ----------------- Word lists -----------------
 
 const grid = [
@@ -40,7 +52,7 @@ const forwardsWords = [
   "tron",
 ] as const;
 
-const forwardsWordsExtra = ["anime", "dose", "erie", "sore"] as const;
+const forwardsWordsExtra = ["anime", "dose", "erie", "sore", "crete"] as const;
 
 const backwardsWords = [
   "dirt",
@@ -104,6 +116,8 @@ const secretMessageColor = "rgba(255, 192, 203, 0.7)"; // Pink
 export {
   ALPHABET,
   CRYPTOGRAM_KEY,
+  POEM_FIRST_LETTER_KEY,
+  POEM_LAST_LETTER_KEY,
   backwardsWords,
   backwardsWordsExtra,
   forwardsWords,

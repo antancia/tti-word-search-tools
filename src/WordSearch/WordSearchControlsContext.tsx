@@ -40,6 +40,8 @@ interface WordSearchControlsContextValue {
   setManualHighlights: (highlights: Record<string, number>) => void;
   colorGroupRotations: number[]; // rotation value for each color group (0-5)
   setColorGroupRotations: (rotations: number[]) => void;
+  cryptogramKey: string; // 26-character cryptogram key
+  setCryptogramKey: (key: string) => void;
 }
 
 const WordSearchControlsContext = createContext<

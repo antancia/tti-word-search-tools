@@ -33,6 +33,13 @@ export const ManualHighlightingControls: React.FC = () => {
     return Array.from(groups).sort((a, b) => a - b);
   }, [manualHighlights]);
 
+  // Check if any manual highlights exist or rotations are non-zero
+  const isModified = useMemo(() => {
+    const hasHighlights = Object.keys(manualHighlights).length > 0;
+    const hasRotations = colorGroupRotations.some((r) => r !== 0);
+    return hasHighlights || hasRotations;
+  }, [manualHighlights, colorGroupRotations]);
+
   const handleRotation = (colorGroup: number, delta: number) => {
     const newRotations = [...colorGroupRotations];
     const currentRotation = newRotations[colorGroup] || 0;
@@ -70,7 +77,7 @@ export const ManualHighlightingControls: React.FC = () => {
     <div className="controls-box">
       <Disclosure id="manual-highlighting-tools" aria-label="Manual Highlighting Tools">
         <Disclosure.Heading>
-          <ControlPanelHeader title="Manual Highlighting Tools" />
+          <ControlPanelHeader title="Manual Highlighting Tools" isModified={isModified} />
         </Disclosure.Heading>
         <Disclosure.Content>
           <Disclosure.Body>
