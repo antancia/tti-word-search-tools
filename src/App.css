@@ -195,6 +195,229 @@
   align-items: center;
 }
 
+/* Wrapper: sidebar (all rows/cols) + main grid area */
+.grid-layout-with-sidebar {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.grid-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f8f8f8;
+  flex-shrink: 0;
+}
+
+.grid-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.grid-top-row {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 2px;
+}
+
+.grid-shift-all-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.grid-shift-all-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.grid-sidebar .grid-shift-all-group .grid-shift-btn {
+  width: 28px;
+  min-width: 28px;
+  height: 22px;
+  font-size: 12px;
+}
+
+.grid-axes-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
+
+.grid-axes-toggle input {
+  cursor: pointer;
+}
+
+.grid-clear-highlights-btn {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: #333;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.grid-clear-highlights-btn:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.grid-clear-highlights-btn:active {
+  background: #ccc;
+}
+
+/* Axis labels: numbers on top (1, 2, 3, ...), letters on left (A, B, C, ...) */
+.grid-axis-top-row {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 2px;
+}
+
+.grid-axis-corner,
+.grid-axis-row-label {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.grid-axis-reset-spacer {
+  width: 56px;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+
+.grid-axis-col-label {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.grid-corner,
+.grid-reset-btn {
+  width: 56px;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+
+.grid-reset-btn {
+  height: 30px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: #333;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.grid-reset-btn:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.grid-reset-btn:active {
+  background: #ccc;
+}
+
+.grid-col-buttons {
+  display: flex;
+  gap: 0;
+}
+
+.grid-col-button-group {
+  width: 30px;
+  min-width: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.grid-row-wrapper {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 0;
+}
+
+.grid-row-buttons {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  padding-right: 4px;
+  flex-shrink: 0;
+}
+
+.grid-shift-btn {
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: #333;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.grid-shift-btn:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.grid-shift-btn:active {
+  background: #ccc;
+}
+
+.grid-col-button-group .grid-shift-btn {
+  width: 30px;
+  min-width: 30px;
+  height: 14px;
+  font-size: 12px;
+}
+
 .grid {
   display: flex;
   flex-direction: column;

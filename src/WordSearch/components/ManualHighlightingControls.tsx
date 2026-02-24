@@ -73,6 +73,23 @@ export const ManualHighlightingControls: React.FC = () => {
     setColorGroupRotations(new Array(6).fill(0));
   };
 
+  const handleUnifyColor = () => {
+    // Set all manually highlighted cells to the same color (group 1)
+    const keys = Object.keys(manualHighlights).filter(
+      (key) => manualHighlights[key] > 0
+    );
+    if (keys.length === 0) return;
+    const newHighlights: Record<string, number> = {};
+    keys.forEach((key) => {
+      newHighlights[key] = 1;
+    });
+    setManualHighlights(newHighlights);
+    // Reset rotations for other groups so only group 1 matters; keep group 1's rotation
+    const newRotations = [...colorGroupRotations];
+    for (let g = 2; g <= 6; g++) newRotations[g] = 0;
+    setColorGroupRotations(newRotations);
+  };
+
   return (
     <div className="controls-box">
       <Disclosure id="manual-highlighting-tools" aria-label="Manual Highlighting Tools">
@@ -156,7 +173,14 @@ export const ManualHighlightingControls: React.FC = () => {
               {activeColorGroups.length > 0 && (
                 <>
                   <Separator className="my-3" />
-                  <div className="pb-1">
+                  <div className="pb-1 flex flex-col gap-2">
+                    <Button
+                      variant="secondary"
+                      onPress={handleUnifyColor}
+                      className="w-full"
+                    >
+                      Make all same color
+                    </Button>
                     <Button
                       variant="secondary"
                       onPress={handleClearAll}

@@ -12,6 +12,8 @@ interface WordSearchControlsContextValue {
   setHighlightBackwardsExtra: (value: boolean) => void;
   highlightSecretMessage: boolean;
   setHighlightSecretMessage: (value: boolean) => void;
+  unifyWordHighlightColors: boolean;
+  setUnifyWordHighlightColors: (value: boolean) => void;
   encodeCryptogram: boolean;
   setEncodeCryptogram: (value: boolean) => void;
   decodeCryptogram: boolean;
@@ -40,8 +42,20 @@ interface WordSearchControlsContextValue {
   setManualHighlights: (highlights: Record<string, number>) => void;
   colorGroupRotations: number[]; // rotation value for each color group (0-5)
   setColorGroupRotations: (rotations: number[]) => void;
+  gridRows: string[];
   cryptogramKey: string; // 26-character cryptogram key
   setCryptogramKey: (key: string) => void;
+  shiftRowLeft: (rowIndex: number) => void;
+  shiftRowRight: (rowIndex: number) => void;
+  shiftColUp: (colIndex: number) => void;
+  shiftColDown: (colIndex: number) => void;
+  shiftRowsUp: () => void;
+  shiftRowsDown: () => void;
+  shiftColsLeft: () => void;
+  shiftColsRight: () => void;
+  resetGrid: () => void;
+  showGridAxes: boolean;
+  setShowGridAxes: (value: boolean) => void;
 }
 
 const WordSearchControlsContext = createContext<
