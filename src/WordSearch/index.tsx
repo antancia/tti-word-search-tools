@@ -36,6 +36,8 @@ export default function WordSearch() {
     useState<boolean>(false);
   const [highlightSecretMessage, setHighlightSecretMessage] =
     useState<boolean>(false);
+  const [unifyWordHighlightColors, setUnifyWordHighlightColors] =
+    useState<boolean>(false);
   const [encodeCryptogram, setEncodeCryptogram] = useState<boolean>(false);
   const [decodeCryptogram, setDecodeCryptogram] = useState<boolean>(false);
   const [selectedLetters, setSelectedLetters] = useState<Set<string>>(
@@ -74,6 +76,164 @@ export default function WordSearch() {
   const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(
     new Set([])
   );
+  const [showGridAxes, setShowGridAxes] = useState(false);
+
+  // Mutable grid state for row/column shifting (wraps at edges)
+  const [gridState, setGridState] = useState<string[]>(() =>
+    grid.map((row) => row)
+  );
+
+  const rows = gridState.length;
+  const cols = gridState[0]?.length ?? 0;
+
+  const shiftRowLeft = (rowIndex: number) => {
+    const row = gridState[rowIndex];
+    if (!row || row.length < 2) return;
+    const shifted = row.slice(1) + row[0];
+    setGridState((prev) => {
+      const next = [...prev];
+      next[rowIndex] = shifted;
+      return next;
+    });
+    setManualHighlights((prev) => {
+      const next = { ...prev };
+      for (let c = 0; c < cols; c++) {
+        const fromKey = `${rowIndex},${(c + 1) % cols}`;
+        const toKey = `${rowIndex},${c}`;
+        if (prev[fromKey] !== undefined) next[toKey] = prev[fromKey];
+        else delete next[toKey];
+      }
+      return next;
+    });
+  };
+
+  const shiftRowRight = (rowIndex: number) => {
+    const row = gridState[rowIndex];
+    if (!row || row.length < 2) return;
+    const shifted = row[row.length - 1] + row.slice(0, -1);
+    setGridState((prev) => {
+      const next = [...prev];
+      next[rowIndex] = shifted;
+      return next;
+    });
+    setManualHighlights((prev) => {
+      const next = { ...prev };
+      for (let c = 0; c < cols; c++) {
+        const fromKey = `${rowIndex},${(c - 1 + cols) % cols}`;
+        const toKey = `${rowIndex},${c}`;
+        if (prev[fromKey] !== undefined) next[toKey] = prev[fromKey];
+        else delete next[toKey];
+      }
+      return next;
+    });
+  };
+
+  const shiftColUp = (colIndex: number) => {
+    setGridState((prev) => {
+      const col = prev.map((row) => row[colIndex]).join("");
+      if (!col || col.length < 2) return prev;
+      const shifted = col.slice(1) + col[0];
+      return prev.map((row, r) =>
+        row.slice(0, colIndex) + shifted[r] + row.slice(colIndex + 1)
+      );
+    });
+    setManualHighlights((prev) => {
+      const next = { ...prev };
+      for (let r = 0; r < rows; r++) {
+        const fromKey = `${(r + 1) % rows},${colIndex}`;
+        const toKey = `${r},${colIndex}`;
+        if (prev[fromKey] !== undefined) next[toKey] = prev[fromKey];
+        else delete next[toKey];
+      }
+      return next;
+    });
+  };
+
+  const shiftColDown = (colIndex: number) => {
+    setGridState((prev) => {
+      const col = prev.map((row) => row[colIndex]).join("");
+      if (!col || col.length < 2) return prev;
+      const shifted = col[col.length - 1] + col.slice(0, -1);
+      return prev.map((row, r) =>
+        row.slice(0, colIndex) + shifted[r] + row.slice(colIndex + 1)
+      );
+    });
+    setManualHighlights((prev) => {
+      const next = { ...prev };
+      for (let r = 0; r < rows; r++) {
+        const fromKey = `${(r - 1 + rows) % rows},${colIndex}`;
+        const toKey = `${r},${colIndex}`;
+        if (prev[fromKey] !== undefined) next[toKey] = prev[fromKey];
+        else delete next[toKey];
+      }
+      return next;
+    });
+  };
+
+  // Shift entire puzzle: all rows or all columns at once
+  const shiftRowsUp = () => {
+    if (rows < 2) return;
+    setGridState((prev) => {
+      const [first, ...rest] = prev;
+      return [...rest, first];
+    });
+    setManualHighlights((prev) => {
+      const next: Record<string, number> = {};
+      Object.entries(prev).forEach(([key, group]) => {
+        const [r, c] = key.split(",").map(Number);
+        next[`${(r - 1 + rows) % rows},${c}`] = group;
+      });
+      return next;
+    });
+  };
+
+  const shiftRowsDown = () => {
+    if (rows < 2) return;
+    setGridState((prev) => {
+      const last = prev[prev.length - 1];
+      return [last, ...prev.slice(0, -1)];
+    });
+    setManualHighlights((prev) => {
+      const next: Record<string, number> = {};
+      Object.entries(prev).forEach(([key, group]) => {
+        const [r, c] = key.split(",").map(Number);
+        next[`${(r + 1) % rows},${c}`] = group;
+      });
+      return next;
+    });
+  };
+
+  const shiftColsLeft = () => {
+    if (cols < 2) return;
+    setGridState((prev) => prev.map((row) => row.slice(1) + row[0]));
+    setManualHighlights((prev) => {
+      const next: Record<string, number> = {};
+      Object.entries(prev).forEach(([key, group]) => {
+        const [r, c] = key.split(",").map(Number);
+        next[`${r},${(c - 1 + cols) % cols}`] = group;
+      });
+      return next;
+    });
+  };
+
+  const shiftColsRight = () => {
+    if (cols < 2) return;
+    setGridState((prev) =>
+      prev.map((row) => row[row.length - 1] + row.slice(0, -1))
+    );
+    setManualHighlights((prev) => {
+      const next: Record<string, number> = {};
+      Object.entries(prev).forEach(([key, group]) => {
+        const [r, c] = key.split(",").map(Number);
+        next[`${r},${(c + 1) % cols}`] = group;
+      });
+      return next;
+    });
+  };
+
+  const resetGrid = () => {
+    setGridState(grid.map((row) => row));
+  };
 
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
   const cryptogramEncodeMapping = useMemo(() => {
@@ -104,11 +264,11 @@ export default function WordSearch() {
   // Create transformed grid for word searching when toggle is OFF and cryptogram is active
   const searchGrid = useMemo(() => {
     if (applyHighlightsToOriginalGrid || !isCryptogramActive) {
-      return grid;
+      return gridState;
     }
 
     // Transform the grid based on encode/decode state
-    return grid.map((row) =>
+    return gridState.map((row) =>
       row
         .split("")
         .map((letter) => {
@@ -123,6 +283,7 @@ export default function WordSearch() {
         .join("")
     );
   }, [
+    gridState,
     applyHighlightsToOriginalGrid,
     isCryptogramActive,
     encodeCryptogram,
@@ -260,6 +421,13 @@ export default function WordSearch() {
       allWordInstances[i].colorId = colorId;
     }
 
+    // When unified: all forwards words use one color, all backwards words use one color
+    if (unifyWordHighlightColors) {
+      allWordInstances.forEach((inst) => {
+        inst.colorId = 0;
+      });
+    }
+
     // Build cell highlights - track which word instances use each cell
     allWordInstances.forEach((instance) => {
       instance.positions.forEach(({ row, col }) => {
@@ -278,6 +446,7 @@ export default function WordSearch() {
     highlightBackwards,
     highlightBackwardsExtra,
     highlightSecretMessage,
+    unifyWordHighlightColors,
     forwardsWordsState,
     forwardsWordsExtraState,
     backwardsWordsState,
@@ -297,6 +466,8 @@ export default function WordSearch() {
     setHighlightBackwardsExtra,
     highlightSecretMessage,
     setHighlightSecretMessage,
+    unifyWordHighlightColors,
+    setUnifyWordHighlightColors,
     encodeCryptogram,
     setEncodeCryptogram,
     decodeCryptogram,
@@ -325,6 +496,18 @@ export default function WordSearch() {
     setManualHighlights,
     colorGroupRotations,
     setColorGroupRotations,
+    gridRows: gridState,
+    shiftRowLeft,
+    shiftRowRight,
+    shiftColUp,
+    shiftColDown,
+    shiftRowsUp,
+    shiftRowsDown,
+    shiftColsLeft,
+    shiftColsRight,
+    resetGrid,
+    showGridAxes,
+    setShowGridAxes,
   };
 
   return (

@@ -15,6 +15,8 @@ export const WordHighlightControls: React.FC = () => {
     setHighlightBackwardsExtra,
     highlightSecretMessage,
     setHighlightSecretMessage,
+    unifyWordHighlightColors,
+    setUnifyWordHighlightColors,
   } = useWordSearchControls();
 
   return (
@@ -93,6 +95,25 @@ export const WordHighlightControls: React.FC = () => {
                     }
                   />
                   <span>highlight secret message letters</span>
+                </label>
+              </div>
+              <Separator className="my-3" />
+              <div className="controls">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={unifyWordHighlightColors}
+                    onChange={(e) =>
+                      setUnifyWordHighlightColors(e.target.checked)
+                    }
+                  />
+                  <span>Use single color for all words</span>
+                  <span className="tooltip-container">
+                    <span className="tooltip-icon">?</span>
+                    <span className="tooltip-text">
+                      All highlighted words (forwards, backwards, secret message) use one color
+                    </span>
+                  </span>
                 </label>
               </div>
               <Separator className="my-3" />
