@@ -1,4 +1,4 @@
-import { DisclosureGroup } from "@heroui/react";
+import { DisclosureGroup } from '@heroui/react';
 
 import {
   ALPHABET,
@@ -8,24 +8,27 @@ import {
   backwardsWords,
   backwardsWordsExtra,
   secretMessageWords,
+  unscrambledSecretMessageWords,
   grid,
-} from "./constants";
-import { useState, useMemo } from "react";
-import "../App.css";
-import { CellHighlight, WordInstance } from "./types";
+  unscrambledGrid,
+} from './constants';
+import { useState, useMemo } from 'react';
+import '../App.css';
+import { CellHighlight, WordInstance } from './types';
 import {
   findSecretMessageWordsSequential,
   findWordPositions,
   overlap,
   shareEdge,
-} from "./helpers";
-import { WordHighlightControls } from "./components/WordHighlightControls";
-import { LetterHighlightControls } from "./components/LetterHighlightControls";
-import { CryptogramControls } from "./components/CryptogramControls";
-import { WordsControls } from "./components/WordsControls";
-import { ManualHighlightingControls } from "./components/ManualHighlightingControls";
-import { WordSearchControlsProvider } from "./WordSearchControlsContext";
-import { Grid } from "./components/Grid";
+} from './helpers';
+import { WordHighlightControls } from './components/WordHighlightControls';
+import { LetterHighlightControls } from './components/LetterHighlightControls';
+import { CryptogramControls } from './components/CryptogramControls';
+import { WordsControls } from './components/WordsControls';
+import { ManualHighlightingControls } from './components/ManualHighlightingControls';
+import { ShiftingControls } from './components/ShiftingControls';
+import { WordSearchControlsProvider } from './WordSearchControlsContext';
+import { Grid } from './components/Grid';
 
 export default function WordSearch() {
   const [highlightForwards, setHighlightForwards] = useState<boolean>(false);
@@ -36,12 +39,14 @@ export default function WordSearch() {
     useState<boolean>(false);
   const [highlightSecretMessage, setHighlightSecretMessage] =
     useState<boolean>(false);
+  const [highlightUnscrambledSecretMessage, setHighlightUnscrambledSecretMessage] =
+    useState<boolean>(false);
   const [unifyWordHighlightColors, setUnifyWordHighlightColors] =
     useState<boolean>(false);
   const [encodeCryptogram, setEncodeCryptogram] = useState<boolean>(false);
   const [decodeCryptogram, setDecodeCryptogram] = useState<boolean>(false);
   const [selectedLetters, setSelectedLetters] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [excludeLettersInWords, setExcludeLettersInWords] =
     useState<boolean>(false);
@@ -50,13 +55,13 @@ export default function WordSearch() {
 
   // Word lists state - default to constants
   const [forwardsWordsState, setForwardsWordsState] = useState<string[]>(
-    Array.from(forwardsWords)
+    Array.from(forwardsWords),
   );
   const [forwardsWordsExtraState, setForwardsWordsExtraState] = useState<
     string[]
   >(Array.from(forwardsWordsExtra));
   const [backwardsWordsState, setBackwardsWordsState] = useState<string[]>(
-    Array.from(backwardsWords)
+    Array.from(backwardsWords),
   );
   const [backwardsWordsExtraState, setBackwardsWordsExtraState] = useState<
     string[]
@@ -64,33 +69,44 @@ export default function WordSearch() {
   const [secretMessageWordsState, setSecretMessageWordsState] = useState<
     string[]
   >(Array.from(secretMessageWords));
+  const [unscrambledSecretMessageWordsState, setUnscrambledSecretMessageWordsState] =
+    useState<string[]>(Array.from(unscrambledSecretMessageWords));
 
   // Manual highlighting state
   const [manualHighlights, setManualHighlights] = useState<
     Record<string, number>
   >({}); // cell key -> color group (0-5, 0 = no highlight)
   const [colorGroupRotations, setColorGroupRotations] = useState<number[]>(
-    new Array(6).fill(0) // 6 color groups (1-5), index 0 unused
+    new Array(6).fill(0), // 6 color groups (1-5), index 0 unused
   );
 
   const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(
-    new Set([])
+    new Set([]),
   );
   const [showGridAxes, setShowGridAxes] = useState(false);
+  const [showUnscrambledGrid, setShowUnscrambledGrid] = useState(false);
 
   // Mutable grid state for row/column shifting (wraps at edges)
   const [gridState, setGridState] = useState<string[]>(() =>
-    grid.map((row) => row)
+    grid.map((row) => row),
+  );
+  const [unscrambledGridState, setUnscrambledGridState] = useState<string[]>(
+    () => unscrambledGrid.map((row) => row),
   );
 
-  const rows = gridState.length;
-  const cols = gridState[0]?.length ?? 0;
+  const activeGrid = showUnscrambledGrid ? unscrambledGridState : gridState;
+  const setActiveGrid = showUnscrambledGrid
+    ? setUnscrambledGridState
+    : setGridState;
+
+  const rows = activeGrid.length;
+  const cols = activeGrid[0]?.length ?? 0;
 
   const shiftRowLeft = (rowIndex: number) => {
-    const row = gridState[rowIndex];
+    const row = activeGrid[rowIndex];
     if (!row || row.length < 2) return;
     const shifted = row.slice(1) + row[0];
-    setGridState((prev) => {
+    setActiveGrid((prev) => {
       const next = [...prev];
       next[rowIndex] = shifted;
       return next;
@@ -108,10 +124,10 @@ export default function WordSearch() {
   };
 
   const shiftRowRight = (rowIndex: number) => {
-    const row = gridState[rowIndex];
+    const row = activeGrid[rowIndex];
     if (!row || row.length < 2) return;
     const shifted = row[row.length - 1] + row.slice(0, -1);
-    setGridState((prev) => {
+    setActiveGrid((prev) => {
       const next = [...prev];
       next[rowIndex] = shifted;
       return next;
@@ -129,12 +145,13 @@ export default function WordSearch() {
   };
 
   const shiftColUp = (colIndex: number) => {
-    setGridState((prev) => {
-      const col = prev.map((row) => row[colIndex]).join("");
+    setActiveGrid((prev) => {
+      const col = prev.map((row) => row[colIndex]).join('');
       if (!col || col.length < 2) return prev;
       const shifted = col.slice(1) + col[0];
-      return prev.map((row, r) =>
-        row.slice(0, colIndex) + shifted[r] + row.slice(colIndex + 1)
+      return prev.map(
+        (row, r) =>
+          row.slice(0, colIndex) + shifted[r] + row.slice(colIndex + 1),
       );
     });
     setManualHighlights((prev) => {
@@ -150,12 +167,13 @@ export default function WordSearch() {
   };
 
   const shiftColDown = (colIndex: number) => {
-    setGridState((prev) => {
-      const col = prev.map((row) => row[colIndex]).join("");
+    setActiveGrid((prev) => {
+      const col = prev.map((row) => row[colIndex]).join('');
       if (!col || col.length < 2) return prev;
       const shifted = col[col.length - 1] + col.slice(0, -1);
-      return prev.map((row, r) =>
-        row.slice(0, colIndex) + shifted[r] + row.slice(colIndex + 1)
+      return prev.map(
+        (row, r) =>
+          row.slice(0, colIndex) + shifted[r] + row.slice(colIndex + 1),
       );
     });
     setManualHighlights((prev) => {
@@ -173,14 +191,14 @@ export default function WordSearch() {
   // Shift entire puzzle: all rows or all columns at once
   const shiftRowsUp = () => {
     if (rows < 2) return;
-    setGridState((prev) => {
+    setActiveGrid((prev) => {
       const [first, ...rest] = prev;
       return [...rest, first];
     });
     setManualHighlights((prev) => {
       const next: Record<string, number> = {};
       Object.entries(prev).forEach(([key, group]) => {
-        const [r, c] = key.split(",").map(Number);
+        const [r, c] = key.split(',').map(Number);
         next[`${(r - 1 + rows) % rows},${c}`] = group;
       });
       return next;
@@ -189,14 +207,14 @@ export default function WordSearch() {
 
   const shiftRowsDown = () => {
     if (rows < 2) return;
-    setGridState((prev) => {
+    setActiveGrid((prev) => {
       const last = prev[prev.length - 1];
       return [last, ...prev.slice(0, -1)];
     });
     setManualHighlights((prev) => {
       const next: Record<string, number> = {};
       Object.entries(prev).forEach(([key, group]) => {
-        const [r, c] = key.split(",").map(Number);
+        const [r, c] = key.split(',').map(Number);
         next[`${(r + 1) % rows},${c}`] = group;
       });
       return next;
@@ -205,11 +223,11 @@ export default function WordSearch() {
 
   const shiftColsLeft = () => {
     if (cols < 2) return;
-    setGridState((prev) => prev.map((row) => row.slice(1) + row[0]));
+    setActiveGrid((prev) => prev.map((row) => row.slice(1) + row[0]));
     setManualHighlights((prev) => {
       const next: Record<string, number> = {};
       Object.entries(prev).forEach(([key, group]) => {
-        const [r, c] = key.split(",").map(Number);
+        const [r, c] = key.split(',').map(Number);
         next[`${r},${(c - 1 + cols) % cols}`] = group;
       });
       return next;
@@ -218,13 +236,13 @@ export default function WordSearch() {
 
   const shiftColsRight = () => {
     if (cols < 2) return;
-    setGridState((prev) =>
-      prev.map((row) => row[row.length - 1] + row.slice(0, -1))
+    setActiveGrid((prev) =>
+      prev.map((row) => row[row.length - 1] + row.slice(0, -1)),
     );
     setManualHighlights((prev) => {
       const next: Record<string, number> = {};
       Object.entries(prev).forEach(([key, group]) => {
-        const [r, c] = key.split(",").map(Number);
+        const [r, c] = key.split(',').map(Number);
         next[`${r},${(c + 1) % cols}`] = group;
       });
       return next;
@@ -233,7 +251,10 @@ export default function WordSearch() {
 
   const resetGrid = () => {
     setGridState(grid.map((row) => row));
+    setUnscrambledGridState(unscrambledGrid.map((row) => row));
   };
+
+  const gridRows = activeGrid;
 
   // Create mapping from letter (A-Z) to cryptogram key letter (encoding)
   const cryptogramEncodeMapping = useMemo(() => {
@@ -241,7 +262,7 @@ export default function WordSearch() {
     for (let i = 0; i < ALPHABET.length; i++) {
       const keyLetter = CRYPTOGRAM_KEY[i];
       const letter = ALPHABET[i];
-      mapping[letter] = keyLetter === "?" ? "?" : keyLetter;
+      mapping[letter] = keyLetter === '?' ? '?' : keyLetter;
     }
     return mapping;
   }, []);
@@ -252,7 +273,7 @@ export default function WordSearch() {
     for (let i = 0; i < ALPHABET.length; i++) {
       const keyLetter = CRYPTOGRAM_KEY[i];
       const letter = ALPHABET[i];
-      if (keyLetter !== "?") {
+      if (keyLetter !== '?') {
         mapping[keyLetter] = letter;
       }
     }
@@ -264,13 +285,13 @@ export default function WordSearch() {
   // Create transformed grid for word searching when toggle is OFF and cryptogram is active
   const searchGrid = useMemo(() => {
     if (applyHighlightsToOriginalGrid || !isCryptogramActive) {
-      return gridState;
+      return gridRows;
     }
 
     // Transform the grid based on encode/decode state
-    return gridState.map((row) =>
+    return gridRows.map((row) =>
       row
-        .split("")
+        .split('')
         .map((letter) => {
           const upperLetter = letter.toUpperCase();
           if (encodeCryptogram) {
@@ -280,10 +301,10 @@ export default function WordSearch() {
           }
           return letter;
         })
-        .join("")
+        .join(''),
     );
   }, [
-    gridState,
+    gridRows,
     applyHighlightsToOriginalGrid,
     isCryptogramActive,
     encodeCryptogram,
@@ -360,11 +381,27 @@ export default function WordSearch() {
       // Find secret message words by sequential scanning
       const secretMessageInstances = findSecretMessageWordsSequential(
         secretMessageWordsState,
-        searchGrid
+        searchGrid,
       );
       secretMessageInstances.forEach((instance) => {
         allWordInstances.push({
           ...instance,
+          colorId: forwardsColorIndex++,
+        });
+      });
+    }
+
+    if (highlightUnscrambledSecretMessage && showUnscrambledGrid) {
+      // Search in the displayed unscrambled grid (may be shifted)
+      const unscrambledSecretMessageInstances =
+        findSecretMessageWordsSequential(
+          unscrambledSecretMessageWordsState,
+          gridRows,
+        );
+      unscrambledSecretMessageInstances.forEach((instance) => {
+        allWordInstances.push({
+          ...instance,
+          isSecretMessage: true,
           colorId: forwardsColorIndex++,
         });
       });
@@ -409,7 +446,7 @@ export default function WordSearch() {
       let colorId = 0;
       while (true) {
         const isColorUsed = Array.from(related).some(
-          (j) => assignedColors.get(j) === colorId
+          (j) => assignedColors.get(j) === colorId,
         );
         if (!isColorUsed) {
           break;
@@ -446,12 +483,15 @@ export default function WordSearch() {
     highlightBackwards,
     highlightBackwardsExtra,
     highlightSecretMessage,
+    highlightUnscrambledSecretMessage,
+    showUnscrambledGrid,
     unifyWordHighlightColors,
     forwardsWordsState,
     forwardsWordsExtraState,
     backwardsWordsState,
     backwardsWordsExtraState,
     secretMessageWordsState,
+    unscrambledSecretMessageWordsState,
     searchGrid,
   ]);
 
@@ -466,6 +506,8 @@ export default function WordSearch() {
     setHighlightBackwardsExtra,
     highlightSecretMessage,
     setHighlightSecretMessage,
+    highlightUnscrambledSecretMessage,
+    setHighlightUnscrambledSecretMessage,
     unifyWordHighlightColors,
     setUnifyWordHighlightColors,
     encodeCryptogram,
@@ -488,6 +530,8 @@ export default function WordSearch() {
     setBackwardsWordsExtra: setBackwardsWordsExtraState,
     secretMessageWords: secretMessageWordsState,
     setSecretMessageWords: setSecretMessageWordsState,
+    unscrambledSecretMessageWords: unscrambledSecretMessageWordsState,
+    setUnscrambledSecretMessageWords: setUnscrambledSecretMessageWordsState,
     isCryptogramActive,
     cellHighlights,
     cryptogramEncodeMapping,
@@ -496,7 +540,7 @@ export default function WordSearch() {
     setManualHighlights,
     colorGroupRotations,
     setColorGroupRotations,
-    gridRows: gridState,
+    gridRows,
     shiftRowLeft,
     shiftRowRight,
     shiftColUp,
@@ -506,19 +550,21 @@ export default function WordSearch() {
     shiftColsLeft,
     shiftColsRight,
     resetGrid,
+    showUnscrambledGrid,
+    setShowUnscrambledGrid,
     showGridAxes,
     setShowGridAxes,
   };
 
   return (
     <WordSearchControlsProvider value={controlsContextValue}>
-      <div className="flex flex-col">
-        <div className="flex justify-center py-10">
-          <h1 className="uppercase text-2xl font-bold tracking-wide">
+      <div className='flex flex-col'>
+        <div className='flex justify-center py-10'>
+          <h1 className='uppercase text-2xl font-bold tracking-wide'>
             Past & Future Box Word Search
           </h1>
         </div>
-        <div className="flex flex-row gap-8 justify-center items-start">
+        <div className='flex flex-row gap-8 justify-center items-start'>
           <div>
             <DisclosureGroup
               expandedKeys={expandedKeys}
@@ -529,6 +575,7 @@ export default function WordSearch() {
               <LetterHighlightControls />
               <CryptogramControls />
               <ManualHighlightingControls />
+              <ShiftingControls />
             </DisclosureGroup>
           </div>
           <Grid />

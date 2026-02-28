@@ -16,6 +16,7 @@ import {
   backwardsWords as defaultBackwardsWords,
   backwardsWordsExtra as defaultBackwardsWordsExtra,
   secretMessageWords as defaultSecretMessageWords,
+  unscrambledSecretMessageWords as defaultUnscrambledSecretMessageWords,
 } from "../constants";
 
 interface WordListSectionProps {
@@ -133,6 +134,8 @@ export const WordsControls: React.FC = () => {
     setBackwardsWordsExtra,
     secretMessageWords,
     setSecretMessageWords,
+    unscrambledSecretMessageWords,
+    setUnscrambledSecretMessageWords,
   } = useWordSearchControls();
 
   const [expandedSubSections, setExpandedSubSections] = useState<
@@ -163,6 +166,7 @@ export const WordsControls: React.FC = () => {
     setBackwardsWords([...defaultBackwardsWords]);
     setBackwardsWordsExtra([...defaultBackwardsWordsExtra]);
     setSecretMessageWords([...defaultSecretMessageWords]);
+    setUnscrambledSecretMessageWords([...defaultUnscrambledSecretMessageWords]);
   };
 
   return (
@@ -251,6 +255,30 @@ export const WordsControls: React.FC = () => {
                   onClearAll={() => setSecretMessageWords([])}
                   onResetToDefault={() =>
                     setSecretMessageWords([...defaultSecretMessageWords])
+                  }
+                />
+                <WordListSection
+                  title="Unscrambled secret message words"
+                  words={unscrambledSecretMessageWords}
+                  onAddWord={(word) =>
+                    addWord(
+                      word,
+                      unscrambledSecretMessageWords,
+                      setUnscrambledSecretMessageWords
+                    )
+                  }
+                  onRemoveWord={(word) =>
+                    removeWord(
+                      word,
+                      unscrambledSecretMessageWords,
+                      setUnscrambledSecretMessageWords
+                    )
+                  }
+                  onClearAll={() => setUnscrambledSecretMessageWords([])}
+                  onResetToDefault={() =>
+                    setUnscrambledSecretMessageWords([
+                      ...defaultUnscrambledSecretMessageWords,
+                    ])
                   }
                 />
               </DisclosureGroup>

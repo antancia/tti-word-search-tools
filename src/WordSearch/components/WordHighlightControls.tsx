@@ -15,6 +15,8 @@ export const WordHighlightControls: React.FC = () => {
     setHighlightBackwardsExtra,
     highlightSecretMessage,
     setHighlightSecretMessage,
+    highlightUnscrambledSecretMessage,
+    setHighlightUnscrambledSecretMessage,
     unifyWordHighlightColors,
     setUnifyWordHighlightColors,
   } = useWordSearchControls();
@@ -96,6 +98,16 @@ export const WordHighlightControls: React.FC = () => {
                   />
                   <span>highlight secret message letters</span>
                 </label>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={highlightUnscrambledSecretMessage}
+                    onChange={(e) =>
+                      setHighlightUnscrambledSecretMessage(e.target.checked)
+                    }
+                  />
+                  <span>highlight unscrambled secret message words</span>
+                </label>
               </div>
               <Separator className="my-3" />
               <div className="controls">
@@ -126,6 +138,7 @@ export const WordHighlightControls: React.FC = () => {
                     setHighlightBackwards(false);
                     setHighlightBackwardsExtra(false);
                     setHighlightSecretMessage(false);
+                    setHighlightUnscrambledSecretMessage(false);
                   }}
                   className="w-full"
                 >

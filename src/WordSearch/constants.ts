@@ -22,6 +22,24 @@ const grid = [
   'APSOREZNGQZPSAPPHIRE',
 ] as const;
 
+const unscrambledGrid = [
+  'QVUCALILENINETEENBMA',
+  'CTHERETAREOFIVECLUES',
+  'OROUNDHINMTHISOLIARO',
+  'UHTRONROEOWORDSEARCH',
+  'NBUTDOELNOTTELLRETAW',
+  'TETATSEOANYONEOLINEO',
+  'THEMUPTSEWODTHEREARE',
+  'ENOSKAEPTOOOISPECIAL',
+  'LBENDSOORAOOEVLEWTTU',
+  'ERNSFIVETNTNCOIJUSTO',
+  'VREMAINKLAWESCODTRID',
+  'ESTEADYTOSQUAREEERHT',
+  'NCOMPLETEOTHEQUARRYO',
+  'MISSIONXZFDQBCCASLIY',
+  'APSOREZNGQZPSAPPHIRE',
+] as const;
+
 const forwardsWords = [
   'count',
   'divide',
@@ -85,6 +103,40 @@ const secretMessageWords = [
   'nsiosmi', // mission
 ] as const;
 
+// Split to match how words appear in unscrambled grid (left-to-right, sequential)
+const unscrambledSecretMessageWords = [
+  'there',
+  'are',
+  'five',
+  'clues',
+  'in',
+  'this',
+  'wordsearch',
+  'but',
+  'do',
+  'not',
+  'tell',
+  'anyone',
+  'line',
+  'them',
+  'up',
+  'there',
+  'are',
+  'no',
+  'special',
+  'bends',
+  'or',
+  'tu',
+  'rns',
+  'just',
+  'remain',
+  'steady',
+  'to',
+  'complete',
+  'the',
+  'mission',
+] as const;
+
 // ----------------- Colors -----------------
 
 const forwardsColors = [
@@ -112,7 +164,9 @@ export {
   forwardsWords,
   forwardsWordsExtra,
   grid,
+  unscrambledGrid,
   secretMessageWords,
+  unscrambledSecretMessageWords,
 
   // colors
   backwardsColors,

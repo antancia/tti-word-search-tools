@@ -12,6 +12,8 @@ interface WordSearchControlsContextValue {
   setHighlightBackwardsExtra: (value: boolean) => void;
   highlightSecretMessage: boolean;
   setHighlightSecretMessage: (value: boolean) => void;
+  highlightUnscrambledSecretMessage: boolean;
+  setHighlightUnscrambledSecretMessage: (value: boolean) => void;
   unifyWordHighlightColors: boolean;
   setUnifyWordHighlightColors: (value: boolean) => void;
   encodeCryptogram: boolean;
@@ -34,6 +36,8 @@ interface WordSearchControlsContextValue {
   setBackwardsWordsExtra: (words: string[]) => void;
   secretMessageWords: string[];
   setSecretMessageWords: (words: string[]) => void;
+  unscrambledSecretMessageWords: string[];
+  setUnscrambledSecretMessageWords: (words: string[]) => void;
   isCryptogramActive: boolean;
   cellHighlights: Record<string, CellHighlight>;
   cryptogramEncodeMapping: Record<string, string>;
@@ -52,6 +56,8 @@ interface WordSearchControlsContextValue {
   shiftColsLeft: () => void;
   shiftColsRight: () => void;
   resetGrid: () => void;
+  showUnscrambledGrid: boolean;
+  setShowUnscrambledGrid: (value: boolean) => void;
   showGridAxes: boolean;
   setShowGridAxes: (value: boolean) => void;
 }
