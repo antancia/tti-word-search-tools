@@ -12,6 +12,10 @@ interface WordSearchControlsContextValue {
   setHighlightBackwardsExtra: (value: boolean) => void;
   highlightSecretMessage: boolean;
   setHighlightSecretMessage: (value: boolean) => void;
+  highlightUnscrambledSecretMessage: boolean;
+  setHighlightUnscrambledSecretMessage: (value: boolean) => void;
+  unifyWordHighlightColors: boolean;
+  setUnifyWordHighlightColors: (value: boolean) => void;
   encodeCryptogram: boolean;
   setEncodeCryptogram: (value: boolean) => void;
   decodeCryptogram: boolean;
@@ -32,6 +36,8 @@ interface WordSearchControlsContextValue {
   setBackwardsWordsExtra: (words: string[]) => void;
   secretMessageWords: string[];
   setSecretMessageWords: (words: string[]) => void;
+  unscrambledSecretMessageWords: string[];
+  setUnscrambledSecretMessageWords: (words: string[]) => void;
   isCryptogramActive: boolean;
   cellHighlights: Record<string, CellHighlight>;
   cryptogramEncodeMapping: Record<string, string>;
@@ -42,6 +48,20 @@ interface WordSearchControlsContextValue {
   setColorGroupRotations: (rotations: number[]) => void;
   cryptogramKey: string; // 26-character cryptogram key
   setCryptogramKey: (key: string) => void;
+  gridRows: string[];
+  shiftRowLeft: (rowIndex: number) => void;
+  shiftRowRight: (rowIndex: number) => void;
+  shiftColUp: (colIndex: number) => void;
+  shiftColDown: (colIndex: number) => void;
+  shiftRowsUp: () => void;
+  shiftRowsDown: () => void;
+  shiftColsLeft: () => void;
+  shiftColsRight: () => void;
+  resetGrid: () => void;
+  showUnscrambledGrid: boolean;
+  setShowUnscrambledGrid: (value: boolean) => void;
+  showGridAxes: boolean;
+  setShowGridAxes: (value: boolean) => void;
 }
 
 const WordSearchControlsContext = createContext<
