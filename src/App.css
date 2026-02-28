@@ -233,3 +233,234 @@
   outline-offset: -2px;
 }
 
+/* Miscellaneous controls panel (left sidebar) */
+.shifting-controls-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shifting-shift-all-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.shifting-shift-all-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.shifting-shift-all-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.shifting-shift-btns {
+  display: flex;
+  gap: 2px;
+}
+
+.shifting-shift-btns .grid-shift-btn {
+  width: 28px;
+  min-width: 28px;
+  height: 22px;
+  font-size: 12px;
+}
+
+.shifting-axes-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.shifting-axes-label input {
+  cursor: pointer;
+}
+
+.shifting-clear-btn {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: #333;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.shifting-clear-btn:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+/* Axis labels: numbers on top (1, 2, 3, ...), letters on left (A, B, C, ...) */
+/* All dimensions match grid-cell (30px) for flush alignment */
+.grid-axis-top-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.grid-axis-corner {
+  width: 28px; /* matches grid-axis-row-label */
+  min-width: 28px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.grid-axis-reset-spacer {
+  width: 50px; /* matches grid-controls-column / row-buttons for column alignment */
+  min-width: 50px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.grid-axis-col-label {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  box-sizing: border-box;
+}
+
+.grid-axis-row-label {
+  width: 28px;
+  min-width: 28px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.grid-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.grid-top-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 0;
+}
+
+.grid-controls-column {
+  /* Same width as row-buttons (22+2+22=46) + axis (28) when axes shown, or just row-buttons when not */
+  width: 50px;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.grid-reset-btn {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: #333;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.grid-reset-btn:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.grid-col-buttons {
+  display: flex;
+  gap: 0; /* flush with columns - each group aligns with 30px cell */
+}
+
+.grid-col-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 30px; /* matches grid-cell width exactly */
+  min-width: 30px;
+  flex-shrink: 0;
+}
+
+.grid-col-buttons .grid-shift-btn {
+  width: 30px;
+  min-width: 30px;
+  height: 18px;
+  border-radius: 0;
+}
+
+.grid-shift-btn {
+  width: 30px;
+  min-width: 30px;
+  height: 18px;
+  padding: 0;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-radius: 2px;
+  background: #f0f0f0;
+  color: #333;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.grid-shift-btn:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.grid-row-wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 0;
+}
+
+.grid-row-buttons {
+  display: flex;
+  gap: 0;
+  width: 50px; /* matches grid-controls-column for top row */
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.grid-row-buttons .grid-shift-btn {
+  width: 25px;
+  min-width: 25px;
+  height: 30px; /* matches grid-cell height exactly */
+  flex: 1;
+  border-radius: 0;
+}
+

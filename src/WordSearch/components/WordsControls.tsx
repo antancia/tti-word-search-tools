@@ -17,6 +17,7 @@ import {
   backwardsWords as defaultBackwardsWords,
   backwardsWordsExtra as defaultBackwardsWordsExtra,
   secretMessageWords as defaultSecretMessageWords,
+  unscrambledSecretMessageWords as defaultUnscrambledSecretMessageWords,
 } from "../constants";
 
 // Helper to compare arrays regardless of order
@@ -190,6 +191,8 @@ export const WordsControls: React.FC = () => {
     setBackwardsWordsExtra,
     secretMessageWords,
     setSecretMessageWords,
+    unscrambledSecretMessageWords,
+    setUnscrambledSecretMessageWords,
     highlightForwards,
     setHighlightForwards,
     highlightForwardsExtra,
@@ -200,6 +203,10 @@ export const WordsControls: React.FC = () => {
     setHighlightBackwardsExtra,
     highlightSecretMessage,
     setHighlightSecretMessage,
+    highlightUnscrambledSecretMessage,
+    setHighlightUnscrambledSecretMessage,
+    unifyWordHighlightColors,
+    setUnifyWordHighlightColors,
   } = useWordSearchControls();
 
   const [expandedSubSections, setExpandedSubSections] = useState<
@@ -230,6 +237,7 @@ export const WordsControls: React.FC = () => {
     setBackwardsWords([...defaultBackwardsWords]);
     setBackwardsWordsExtra([...defaultBackwardsWordsExtra]);
     setSecretMessageWords([...defaultSecretMessageWords]);
+    setUnscrambledSecretMessageWords([...defaultUnscrambledSecretMessageWords]);
   };
 
   // Compute highlight all state
@@ -239,6 +247,7 @@ export const WordsControls: React.FC = () => {
     highlightBackwards,
     highlightBackwardsExtra,
     highlightSecretMessage,
+    highlightUnscrambledSecretMessage,
   ];
   const allHighlightsOn = allHighlights.every(Boolean);
   const someHighlightsOn = allHighlights.some(Boolean);
@@ -249,6 +258,7 @@ export const WordsControls: React.FC = () => {
     setHighlightBackwards(checked);
     setHighlightBackwardsExtra(checked);
     setHighlightSecretMessage(checked);
+    setHighlightUnscrambledSecretMessage(checked);
   };
 
   // Check if any word lists differ from defaults or any highlights are on
@@ -258,25 +268,30 @@ export const WordsControls: React.FC = () => {
       !arraysEqual(forwardsWordsExtra, defaultForwardsWordsExtra) ||
       !arraysEqual(backwardsWords, defaultBackwardsWords) ||
       !arraysEqual(backwardsWordsExtra, defaultBackwardsWordsExtra) ||
-      !arraysEqual(secretMessageWords, defaultSecretMessageWords);
+      !arraysEqual(secretMessageWords, defaultSecretMessageWords) ||
+      !arraysEqual(unscrambledSecretMessageWords, defaultUnscrambledSecretMessageWords);
     const highlightsOn =
       highlightForwards ||
       highlightForwardsExtra ||
       highlightBackwards ||
       highlightBackwardsExtra ||
-      highlightSecretMessage;
-    return wordsModified || highlightsOn;
+      highlightSecretMessage ||
+      highlightUnscrambledSecretMessage;
+    return wordsModified || highlightsOn || unifyWordHighlightColors;
   }, [
     forwardsWords,
     forwardsWordsExtra,
     backwardsWords,
     backwardsWordsExtra,
     secretMessageWords,
+    unscrambledSecretMessageWords,
     highlightForwards,
     highlightForwardsExtra,
     highlightBackwards,
     highlightBackwardsExtra,
     highlightSecretMessage,
+    highlightUnscrambledSecretMessage,
+    unifyWordHighlightColors,
   ]);
 
   return (
@@ -289,23 +304,41 @@ export const WordsControls: React.FC = () => {
           <Disclosure.Body>
             <Separator className="mb-3" />
             <div className="px-5">
-              <div className="flex items-center gap-2 mb-1 pb-3 border-b-1 border-neutral-300">
-                <label className="flex items-center cursor-pointer px-2 my-3">
-                  <input
-                    type="checkbox"
-                    checked={allHighlightsOn}
-                    ref={(el) => {
-                      if (el) {
-                        el.indeterminate = someHighlightsOn && !allHighlightsOn;
+              <div className="flex flex-col gap-2 mb-1 pb-3 border-b-1 border-neutral-300">
+                <div className="flex items-center gap-2 my-2">
+                  <label className="flex items-center cursor-pointer px-2">
+                    <input
+                      type="checkbox"
+                      checked={allHighlightsOn}
+                      ref={(el) => {
+                        if (el) {
+                          el.indeterminate =
+                            someHighlightsOn && !allHighlightsOn;
+                        }
+                      }}
+                      onChange={(e) =>
+                        handleToggleAllHighlights(e.target.checked)
                       }
-                    }}
-                    onChange={(e) =>
-                      handleToggleAllHighlights(e.target.checked)
-                    }
-                    className="w-4 h-4"
-                  />
-                </label>
-                <span className="ml-3 text-sm tracking-wide">All</span>
+                      className="w-4 h-4"
+                    />
+                  </label>
+                  <span className="ml-3 text-sm tracking-wide">All</span>
+                </div>
+                <div className="flex items-center gap-2 my-2">
+                  <label className="flex items-center cursor-pointer px-2">
+                    <input
+                      type="checkbox"
+                      checked={unifyWordHighlightColors}
+                      onChange={(e) =>
+                        setUnifyWordHighlightColors(e.target.checked)
+                      }
+                      className="w-4 h-4"
+                    />
+                  </label>
+                  <span className="ml-3 text-sm tracking-wide">
+                    Unify word highlight colors
+                  </span>
+                </div>
               </div>
               <DisclosureGroup
                 expandedKeys={expandedSubSections}
@@ -396,6 +429,32 @@ export const WordsControls: React.FC = () => {
                   }
                   isHighlighted={highlightSecretMessage}
                   onHighlightChange={setHighlightSecretMessage}
+                />
+                <WordListSection
+                  title="Unscrambled secret message words"
+                  words={unscrambledSecretMessageWords}
+                  onAddWord={(word) =>
+                    addWord(
+                      word,
+                      unscrambledSecretMessageWords,
+                      setUnscrambledSecretMessageWords
+                    )
+                  }
+                  onRemoveWord={(word) =>
+                    removeWord(
+                      word,
+                      unscrambledSecretMessageWords,
+                      setUnscrambledSecretMessageWords
+                    )
+                  }
+                  onClearAll={() => setUnscrambledSecretMessageWords([])}
+                  onResetToDefault={() =>
+                    setUnscrambledSecretMessageWords([
+                      ...defaultUnscrambledSecretMessageWords,
+                    ])
+                  }
+                  isHighlighted={highlightUnscrambledSecretMessage}
+                  onHighlightChange={setHighlightUnscrambledSecretMessage}
                 />
               </DisclosureGroup>
             </div>

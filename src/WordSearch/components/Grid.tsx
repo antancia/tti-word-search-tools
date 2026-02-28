@@ -3,7 +3,7 @@ import {
   forwardsColors,
   backwardsColors,
   secretMessageColor,
-  grid,
+  unifiedWordHighlightColor,
 } from "../constants";
 import { blendColors, rotateLetter } from "../helpers";
 import { useWordSearchControls } from "../WordSearchControlsContext";
@@ -31,7 +31,31 @@ export const Grid: React.FC = () => {
     manualHighlights,
     setManualHighlights,
     colorGroupRotations,
+    gridRows,
+    shiftRowLeft,
+    shiftRowRight,
+    shiftColUp,
+    shiftColDown,
+    resetGrid,
+    showGridAxes,
+    unifyWordHighlightColors,
   } = useWordSearchControls();
+
+  const numCols = gridRows[0]?.length ?? 0;
+
+  // Letters on x-axis (columns), numbers on y-axis (rows)
+  const getColLabel = (colIndex: number): string => {
+    let n = colIndex + 1;
+    let s = "";
+    while (n > 0) {
+      n -= 1;
+      s = String.fromCharCode(65 + (n % 26)) + s;
+      n = Math.floor(n / 26);
+    }
+    return s;
+  };
+
+  const getRowLabel = (rowIndex: number): string => String(rowIndex + 1);
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     const key = `${rowIndex},${colIndex}`;
@@ -49,10 +73,95 @@ export const Grid: React.FC = () => {
   };
   return (
     <div className="grid-container">
-      <div className="grid">
-        {grid.map((row, rowIndex) => (
-          <div key={rowIndex} className="grid-row">
-            {row.split("").map((letter, colIndex) => {
+      <div className="grid-layout">
+        {showGridAxes && (
+          <div className="grid-axis-top-row">
+            <div className="grid-axis-corner" aria-hidden="true" />
+            <div className="grid-axis-reset-spacer" aria-hidden="true" />
+            {Array.from({ length: numCols }, (_, colIndex) => (
+              <div
+                key={colIndex}
+                className="grid-axis-col-label"
+                aria-hidden="true"
+              >
+                {getColLabel(colIndex)}
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="grid-top-row">
+          {showGridAxes && (
+            <div
+              className="grid-axis-row-label grid-axis-corner"
+              aria-hidden="true"
+            />
+          )}
+          <div className="grid-controls-column">
+            <button
+              type="button"
+              className="grid-reset-btn"
+              onClick={resetGrid}
+              title="Reset grid to original"
+              aria-label="Reset grid to original"
+            >
+              Reset
+            </button>
+          </div>
+          <div className="grid-col-buttons">
+            {Array.from({ length: numCols }, (_, colIndex) => (
+              <div key={colIndex} className="grid-col-button-group">
+                <button
+                  type="button"
+                  className="grid-shift-btn"
+                  onClick={() => shiftColUp(colIndex)}
+                  title="Shift column up"
+                  aria-label={`Shift column ${colIndex + 1} up`}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className="grid-shift-btn"
+                  onClick={() => shiftColDown(colIndex)}
+                  title="Shift column down"
+                  aria-label={`Shift column ${colIndex + 1} down`}
+                >
+                  ↓
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="grid">
+          {gridRows.map((row, rowIndex) => (
+            <div key={rowIndex} className="grid-row-wrapper">
+              {showGridAxes && (
+                <div className="grid-axis-row-label" aria-hidden="true">
+                  {getRowLabel(rowIndex)}
+                </div>
+              )}
+              <div className="grid-row-buttons">
+                <button
+                  type="button"
+                  className="grid-shift-btn"
+                  onClick={() => shiftRowLeft(rowIndex)}
+                  title="Shift row left"
+                  aria-label={`Shift row ${rowIndex + 1} left`}
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  className="grid-shift-btn"
+                  onClick={() => shiftRowRight(rowIndex)}
+                  title="Shift row right"
+                  aria-label={`Shift row ${rowIndex + 1} right`}
+                >
+                  →
+                </button>
+              </div>
+              <div className="grid-row">
+                {row.split("").map((letter, colIndex) => {
               const key = `${rowIndex},${colIndex}`;
               const highlight = cellHighlights[key] || {
                 wordInstances: [],
@@ -88,6 +197,10 @@ export const Grid: React.FC = () => {
               if (wordInstances.length > 0) {
                 // Get colors for all word instances using this cell
                 const colors = wordInstances.map((instance) => {
+                  // When unified: all words (forwards, backwards, secret) use one darker color
+                  if (unifyWordHighlightColors) {
+                    return unifiedWordHighlightColor;
+                  }
                   // Secret message words use a unique color
                   if (instance.isSecretMessage) {
                     return secretMessageColor;
@@ -156,8 +269,10 @@ export const Grid: React.FC = () => {
                 </div>
               );
             })}
-          </div>
-        ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

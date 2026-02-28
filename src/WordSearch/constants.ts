@@ -34,6 +34,24 @@ const grid = [
   "APSOREZNGQZPSAPPHIRE",
 ] as const;
 
+const unscrambledGrid = [
+  "QVUCALILENINETEENBMA",
+  "CTHERETAREOFIVECLUES",
+  "OROUNDHINMTHISOLIARO",
+  "UHTRONROEOWORDSEARCH",
+  "NBUTDOELNOTTELLRETAW",
+  "TETATSEOANYONEOLINEO",
+  "THEMUPTSEWODTHEREARE",
+  "ENOSKAEPTOOOISPECIAL",
+  "LBENDSOORAOOEVLEWTTU",
+  "ERNSFIVETNTNCOIJUSTO",
+  "VREMAINKLAWESCODTRID",
+  "ESTEADYTOSQUAREEERHT",
+  "NCOMPLETEOTHEQUARRYO",
+  "MISSIONXZFDQBCCASLIY",
+  "APSOREZNGQZPSAPPHIRE",
+] as const;
+
 const forwardsWords = [
   "count",
   "divide",
@@ -97,6 +115,40 @@ const secretMessageWords = [
   "nsiosmi", // mission
 ] as const;
 
+// Split to match how words appear in unscrambled grid (left-to-right, sequential)
+const unscrambledSecretMessageWords = [
+  "there",
+  "are",
+  "five",
+  "clues",
+  "in",
+  "this",
+  "wordsearch",
+  "but",
+  "do",
+  "not",
+  "tell",
+  "anyone",
+  "line",
+  "them",
+  "up",
+  "there",
+  "are",
+  "no",
+  "special",
+  "bends",
+  "or",
+  "tu",
+  "rns",
+  "just",
+  "remain",
+  "steady",
+  "to",
+  "complete",
+  "the",
+  "mission",
+] as const;
+
 // ----------------- Colors -----------------
 
 const forwardsColors = [
@@ -112,6 +164,7 @@ const backwardsColors = [
 ];
 
 const secretMessageColor = "rgba(255, 192, 203, 0.7)"; // Pink
+const unifiedWordHighlightColor = "rgba(100, 100, 100, 0.7)"; // Gray for unified mode
 
 export {
   ALPHABET,
@@ -123,10 +176,13 @@ export {
   forwardsWords,
   forwardsWordsExtra,
   grid,
+  unscrambledGrid,
   secretMessageWords,
+  unscrambledSecretMessageWords,
 
   // colors
   backwardsColors,
   forwardsColors,
   secretMessageColor,
+  unifiedWordHighlightColor,
 };
