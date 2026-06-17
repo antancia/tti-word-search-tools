@@ -15,6 +15,8 @@ export const ShiftingControls: React.FC = () => {
     setColorGroupRotations,
     showUnscrambledGrid,
     setShowUnscrambledGrid,
+    showGridRotationTools,
+    setShowGridRotationTools,
   } = useWordSearchControls();
 
   return (
@@ -27,6 +29,15 @@ export const ShiftingControls: React.FC = () => {
           <Disclosure.Body>
             <Separator className="mb-3" />
             <div className="px-5 shifting-controls-content">
+              <label className="shifting-axes-label">
+                <input
+                  type="checkbox"
+                  checked={showGridRotationTools}
+                  onChange={(e) => setShowGridRotationTools(e.target.checked)}
+                  aria-label="Show grid rotation tools"
+                />
+                <span>Show grid rotation tools</span>
+              </label>
               <div className="shifting-shift-all-row">
                 <div className="shifting-shift-all-group">
                   <span className="shifting-shift-all-label">All rows</span>

@@ -38,6 +38,7 @@ export const Grid: React.FC = () => {
     shiftColDown,
     resetGrid,
     showGridAxes,
+    showGridRotationTools,
     unifyWordHighlightColors,
   } = useWordSearchControls();
 
@@ -89,49 +90,51 @@ export const Grid: React.FC = () => {
             ))}
           </div>
         )}
-        <div className="grid-top-row">
-          {showGridAxes && (
-            <div
-              className="grid-axis-row-label grid-axis-corner"
-              aria-hidden="true"
-            />
-          )}
-          <div className="grid-controls-column">
-            <button
-              type="button"
-              className="grid-reset-btn"
-              onClick={resetGrid}
-              title="Reset grid to original"
-              aria-label="Reset grid to original"
-            >
-              Reset
-            </button>
+        {showGridRotationTools && (
+          <div className="grid-top-row">
+            {showGridAxes && (
+              <div
+                className="grid-axis-row-label grid-axis-corner"
+                aria-hidden="true"
+              />
+            )}
+            <div className="grid-controls-column">
+              <button
+                type="button"
+                className="grid-reset-btn"
+                onClick={resetGrid}
+                title="Reset grid to original"
+                aria-label="Reset grid to original"
+              >
+                Reset
+              </button>
+            </div>
+            <div className="grid-col-buttons">
+              {Array.from({ length: numCols }, (_, colIndex) => (
+                <div key={colIndex} className="grid-col-button-group">
+                  <button
+                    type="button"
+                    className="grid-shift-btn"
+                    onClick={() => shiftColUp(colIndex)}
+                    title="Shift column up"
+                    aria-label={`Shift column ${colIndex + 1} up`}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    className="grid-shift-btn"
+                    onClick={() => shiftColDown(colIndex)}
+                    title="Shift column down"
+                    aria-label={`Shift column ${colIndex + 1} down`}
+                  >
+                    ↓
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid-col-buttons">
-            {Array.from({ length: numCols }, (_, colIndex) => (
-              <div key={colIndex} className="grid-col-button-group">
-                <button
-                  type="button"
-                  className="grid-shift-btn"
-                  onClick={() => shiftColUp(colIndex)}
-                  title="Shift column up"
-                  aria-label={`Shift column ${colIndex + 1} up`}
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  className="grid-shift-btn"
-                  onClick={() => shiftColDown(colIndex)}
-                  title="Shift column down"
-                  aria-label={`Shift column ${colIndex + 1} down`}
-                >
-                  ↓
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
         <div className="grid">
           {gridRows.map((row, rowIndex) => (
             <div key={rowIndex} className="grid-row-wrapper">
@@ -140,26 +143,28 @@ export const Grid: React.FC = () => {
                   {getRowLabel(rowIndex)}
                 </div>
               )}
-              <div className="grid-row-buttons">
-                <button
-                  type="button"
-                  className="grid-shift-btn"
-                  onClick={() => shiftRowLeft(rowIndex)}
-                  title="Shift row left"
-                  aria-label={`Shift row ${rowIndex + 1} left`}
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  className="grid-shift-btn"
-                  onClick={() => shiftRowRight(rowIndex)}
-                  title="Shift row right"
-                  aria-label={`Shift row ${rowIndex + 1} right`}
-                >
-                  →
-                </button>
-              </div>
+              {showGridRotationTools && (
+                <div className="grid-row-buttons">
+                  <button
+                    type="button"
+                    className="grid-shift-btn"
+                    onClick={() => shiftRowLeft(rowIndex)}
+                    title="Shift row left"
+                    aria-label={`Shift row ${rowIndex + 1} left`}
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    className="grid-shift-btn"
+                    onClick={() => shiftRowRight(rowIndex)}
+                    title="Shift row right"
+                    aria-label={`Shift row ${rowIndex + 1} right`}
+                  >
+                    →
+                  </button>
+                </div>
+              )}
               <div className="grid-row">
                 {row.split("").map((letter, colIndex) => {
               const key = `${rowIndex},${colIndex}`;
