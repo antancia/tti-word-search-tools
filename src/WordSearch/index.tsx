@@ -83,6 +83,7 @@ export default function WordSearch() {
     new Set([])
   );
   const [showGridAxes, setShowGridAxes] = useState(false);
+  const [showGridRotationTools, setShowGridRotationTools] = useState(false);
   const [showUnscrambledGrid, setShowUnscrambledGrid] = useState(false);
 
   // Mutable grid state for row/column shifting (wraps at edges)
@@ -560,6 +561,8 @@ export default function WordSearch() {
     setShowUnscrambledGrid,
     showGridAxes,
     setShowGridAxes,
+    showGridRotationTools,
+    setShowGridRotationTools,
   };
 
   return (

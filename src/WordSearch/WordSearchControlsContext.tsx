@@ -62,6 +62,8 @@ interface WordSearchControlsContextValue {
   setShowUnscrambledGrid: (value: boolean) => void;
   showGridAxes: boolean;
   setShowGridAxes: (value: boolean) => void;
+  showGridRotationTools: boolean;
+  setShowGridRotationTools: (value: boolean) => void;
 }
 
 const WordSearchControlsContext = createContext<
